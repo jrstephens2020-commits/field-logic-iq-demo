@@ -594,18 +594,44 @@
     }
 
     function showLoop() {
-      content.innerHTML = `
-        <section class="card">
-          <h2>4-20mA Loop Diagnostic</h2>
+      function showLoop() {
+  content.innerHTML = `
+    <section class="card">
+      <h2>4-20mA Loop Diagnostic</h2>
 
+      <div class="grid-2">
+        <div>
           <label>Measured Current (mA)</label>
           <input id="maLoop" type="number" placeholder="Example: 11.8" />
+        </div>
 
-          <button class="primary" onclick="diagnoseLoop()">Check Loop Status</button>
-          <div id="loopResult" class="result">Awaiting measured current.</div>
-        </section>
-      `;
-    }
+        <div>
+          <label>Expected Range</label>
+          <select id="rangeType">
+            <option value="normal">4-20mA Standard</option>
+            <option value="custom">Custom Range</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label>Loop Power (VDC)</label>
+          <input id="loopPower" type="number" placeholder="Example: 24" />
+        </div>
+
+        <div>
+          <label>Total Resistance (Ω)</label>
+          <input id="loopRes" type="number" placeholder="Example: 250" />
+        </div>
+      </div>
+
+      <button class="primary" onclick="diagnoseLoop()">Run Full Diagnostic</button>
+
+      <div id="loopResult" class="result">Awaiting input.</div>
+    </section>
+  `;
+}
 
     function diagnoseLoop() {
       const ma = Number(document.getElementById("maLoop").value);
