@@ -6,145 +6,209 @@
   <title>Field Logic IQ</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0b0d0f;
-      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255,90,31,.12), transparent 30%),
+        linear-gradient(180deg, #090b0d, #111315);
+      color: #fff;
     }
 
     .app {
       display: grid;
-      grid-template-columns: 240px 1fr;
+      grid-template-columns: 260px 1fr;
       min-height: 100vh;
     }
 
     .sidebar {
-      background: #111418;
-      border-right: 1px solid #2d2d2d;
+      background: #0c0f12;
+      border-right: 1px solid #2b2f33;
       padding: 24px;
     }
 
     .logo {
-      font-size: 24px;
+      font-size: 25px;
       font-weight: 900;
       letter-spacing: 3px;
-      margin-bottom: 6px;
+      line-height: 1.1;
     }
 
     .logo span {
       color: #ff5a1f;
-      border: 1px solid #ff5a1f;
-      padding: 2px 6px;
-      border-radius: 6px;
+      border: 2px solid #ff5a1f;
+      border-radius: 8px;
+      padding: 0 7px;
+      margin-left: 4px;
     }
 
     .powered {
-      font-size: 11px;
+      margin-top: 10px;
       color: #a6a6a6;
-      margin-bottom: 34px;
-      letter-spacing: 1px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      margin-top: 34px;
     }
 
     .nav button {
       width: 100%;
+      background: #12161a;
+      color: #fff;
+      border: 1px solid #2e3338;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 12px;
       text-align: left;
-      background: transparent;
-      border: 1px solid #2d2d2d;
-      color: #ffffff;
-      padding: 14px;
-      margin-bottom: 10px;
+      font-weight: 800;
       cursor: pointer;
-      border-radius: 8px;
-      font-weight: 700;
+      letter-spacing: .8px;
     }
 
     .nav button:hover {
       border-color: #ff5a1f;
       color: #ff5a1f;
+      box-shadow: 0 0 18px rgba(255,90,31,.25);
+    }
+
+    .sidebar-footer {
+      margin-top: 40px;
+      border-top: 1px solid #2e3338;
+      padding-top: 18px;
+      color: #777;
+      font-size: 12px;
+      line-height: 1.6;
     }
 
     .main {
       padding: 28px;
     }
 
-    .topbar {
+    .hero {
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.9), rgba(20,24,28,.85)),
+        linear-gradient(135deg, #12161a, #07090a);
+      border: 1px solid #30353a;
+      border-radius: 18px;
+      padding: 28px;
+      margin-bottom: 22px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 35px rgba(0,0,0,.55);
+    }
+
+    .hero:after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 260px;
+      height: 260px;
+      background: rgba(255,90,31,.12);
+      border-radius: 50%;
+      filter: blur(10px);
+    }
+
+    .hero-top {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 28px;
-      border-bottom: 1px solid #2d2d2d;
-      padding-bottom: 18px;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
     }
 
-    .headline h1 {
+    .hero h1 {
       margin: 0;
-      font-size: 34px;
-      letter-spacing: 2px;
+      font-size: 42px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
     }
 
-    .headline p {
+    .hero p {
       color: #a6a6a6;
-      margin: 8px 0 0;
+      max-width: 720px;
+      line-height: 1.5;
+      margin-bottom: 0;
     }
 
-    .status {
-      color: #22c55e;
+    .badge {
       border: 1px solid #22c55e;
-      padding: 8px 12px;
+      color: #22c55e;
+      padding: 9px 13px;
       border-radius: 999px;
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 12px;
+      font-weight: 900;
+      height: fit-content;
+      white-space: nowrap;
+    }
+
+    .tagline {
+      margin-top: 20px;
+      color: #fff;
+      letter-spacing: 4px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .tagline span {
+      color: #ff5a1f;
     }
 
     .metrics {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
 
     .card {
-      background: linear-gradient(180deg, #15191e, #0f1215);
-      border: 1px solid #2d2d2d;
-      border-radius: 14px;
-      padding: 18px;
-      box-shadow: 0 0 18px rgba(0,0,0,0.5);
+      background: linear-gradient(180deg, #15191e, #0d1013);
+      border: 1px solid #30353a;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: inset 0 0 12px rgba(255,255,255,.02), 0 0 22px rgba(0,0,0,.45);
     }
 
     .card h3 {
       margin: 0 0 10px;
-      font-size: 13px;
       color: #a6a6a6;
-      letter-spacing: 1px;
+      font-size: 12px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
     }
 
     .metric {
-      font-size: 32px;
+      font-size: 34px;
       font-weight: 900;
     }
 
-    .orange {
-      color: #ff5a1f;
-    }
-
-    .blue {
-      color: #1e90ff;
-    }
-
-    .green {
-      color: #22c55e;
-    }
+    .orange { color: #ff5a1f; }
+    .blue { color: #1e90ff; }
+    .green { color: #22c55e; }
+    .yellow { color: #ffc107; }
 
     .layout {
       display: grid;
-      grid-template-columns: 1.3fr 0.7fr;
+      grid-template-columns: 1.2fr .8fr;
       gap: 20px;
+    }
+
+    .panel-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .panel-title h2 {
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
     }
 
     .tool-grid {
@@ -154,101 +218,131 @@
     }
 
     .tool {
-      background: #111418;
-      border: 1px solid #333;
-      border-radius: 12px;
+      background: #0b0e11;
+      border: 1px solid #323840;
+      border-radius: 14px;
       padding: 18px;
-      min-height: 120px;
       cursor: pointer;
+      min-height: 135px;
     }
 
     .tool:hover {
       border-color: #ff5a1f;
-      box-shadow: 0 0 18px rgba(255, 90, 31, 0.25);
+      box-shadow: 0 0 22px rgba(255,90,31,.22);
+    }
+
+    .tool-icon {
+      font-size: 28px;
+      color: #ff5a1f;
+      margin-bottom: 10px;
     }
 
     .tool strong {
       display: block;
-      font-size: 18px;
+      font-size: 17px;
       margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .tool p {
+      margin: 0;
       color: #a6a6a6;
       font-size: 14px;
-      margin: 0;
+      line-height: 1.45;
     }
 
-    .panel-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
     }
 
-    .panel-title h2 {
-      margin: 0;
+    th, td {
+      border-bottom: 1px solid #2e3338;
+      padding: 12px 8px;
+      text-align: left;
+    }
+
+    th {
+      color: #a6a6a6;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 1px;
     }
 
     input, select {
       width: 100%;
-      background: #0b0d0f;
+      background: #090b0d;
       color: white;
-      border: 1px solid #444;
-      padding: 12px;
-      border-radius: 8px;
-      margin: 8px 0 14px;
+      border: 1px solid #3a4047;
+      padding: 13px;
+      border-radius: 10px;
+      margin: 8px 0 15px;
+      font-size: 15px;
+    }
+
+    label {
+      color: #a6a6a6;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 800;
     }
 
     .primary {
-      background: #ff5a1f;
+      background: linear-gradient(180deg, #ff6a2a, #ff4d12);
       color: white;
       border: none;
-      padding: 13px 18px;
-      border-radius: 8px;
-      font-weight: 800;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-weight: 900;
       cursor: pointer;
       width: 100%;
-      box-shadow: 0 0 16px rgba(255, 90, 31, 0.35);
+      letter-spacing: 1px;
+      box-shadow: 0 0 18px rgba(255,90,31,.38);
     }
 
     .result {
+      margin-top: 16px;
+      background: #090b0d;
+      border-left: 5px solid #ff5a1f;
+      padding: 16px;
+      border-radius: 10px;
+      line-height: 1.55;
+    }
+
+    .diagnostic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
       margin-top: 14px;
-      background: #0b0d0f;
-      border-left: 4px solid #ff5a1f;
+    }
+
+    .mini {
+      background: #090b0d;
+      border: 1px solid #2e3338;
+      border-radius: 12px;
       padding: 14px;
-      border-radius: 8px;
-      color: #ffffff;
-      line-height: 1.5;
     }
 
     .footer {
       margin-top: 24px;
-      color: #777;
-      font-size: 13px;
-      letter-spacing: 3px;
-      text-align: center;
-      border-top: 1px solid #2d2d2d;
       padding-top: 18px;
+      border-top: 1px solid #2e3338;
+      text-align: center;
+      color: #777;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
     }
 
     @media (max-width: 900px) {
-      .app {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        border-right: none;
-        border-bottom: 1px solid #2d2d2d;
-      }
-
-      .metrics, .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .tool-grid {
-        grid-template-columns: 1fr;
-      }
+      .app { grid-template-columns: 1fr; }
+      .sidebar { border-right: none; border-bottom: 1px solid #2b2f33; }
+      .metrics, .layout, .tool-grid, .diagnostic-grid { grid-template-columns: 1fr; }
+      .hero-top { flex-direction: column; }
+      .hero h1 { font-size: 30px; }
     }
   </style>
 </head>
@@ -257,49 +351,50 @@
   <div class="app">
     <aside class="sidebar">
       <div class="logo">FIELD LOGIC <span>IQ</span></div>
-      <div class="powered">POWERED BY FAULTLINE ENERGY</div>
+      <div class="powered">Powered by FaultLine Energy</div>
 
       <div class="nav">
-        <button onclick="showHome()">Dashboard</button>
-        <button onclick="showAI()">AI Assist</button>
-        <button onclick="showTroubleshoot()">Troubleshooting</button>
-        <button onclick="showCalculator()">Calculators</button>
-        <button onclick="showLoop()">4-20mA Loop</button>
+        <button onclick="showHome()">▣ Dashboard</button>
+        <button onclick="showAI()">◆ AI Assist</button>
+        <button onclick="showTroubleshoot()">⚠ Troubleshooting</button>
+        <button onclick="showCalculator()">⌁ Calculators</button>
+        <button onclick="showLoop()">⟲ 4-20mA Loop</button>
+      </div>
+
+      <div class="sidebar-footer">
+        <strong>FIELD MODE</strong><br>
+        Offline-ready concept<br>
+        Rugged technician interface<br>
+        Built for industrial diagnostics
       </div>
     </aside>
 
     <main class="main">
-      <div class="topbar">
-        <div class="headline">
-          <h1>FIELD INTELLIGENCE CONSOLE</h1>
-          <p>Find the Fault. Fix the Flow.</p>
+      <section class="hero">
+        <div class="hero-top">
+          <div>
+            <h1>Field Intelligence Console</h1>
+            <p>
+              Industrial AI tools for automation, instrumentation, valves, electrical loops,
+              PLC logic, telemetry, radio, and cellular troubleshooting.
+            </p>
+            <div class="tagline">Find the <span>Fault</span>. Fix the <span>Flow</span>.</div>
+          </div>
+          <div class="badge">SYSTEM ONLINE</div>
         </div>
-        <div class="status">SYSTEM ONLINE</div>
-      </div>
+      </section>
 
-      <div class="metrics">
-        <div class="card">
-          <h3>Active Cases</h3>
-          <div class="metric orange">23</div>
-        </div>
-        <div class="card">
-          <h3>Critical Alerts</h3>
-          <div class="metric orange">4</div>
-        </div>
-        <div class="card">
-          <h3>Resolved Today</h3>
-          <div class="metric blue">18</div>
-        </div>
-        <div class="card">
-          <h3>System Health</h3>
-          <div class="metric green">92%</div>
-        </div>
-      </div>
+      <section class="metrics">
+        <div class="card"><h3>Active Cases</h3><div class="metric orange">23</div></div>
+        <div class="card"><h3>Critical Alerts</h3><div class="metric orange">4</div></div>
+        <div class="card"><h3>Resolved Today</h3><div class="metric blue">18</div></div>
+        <div class="card"><h3>System Health</h3><div class="metric green">92%</div></div>
+      </section>
 
       <div id="content"></div>
 
       <div class="footer">
-        FIELD PROVEN | ENGINEER DRIVEN | DATA POWERED | PERFORMANCE FOCUSED
+        Field Proven | Engineer Driven | Data Powered | Performance Focused
       </div>
     </main>
   </div>
@@ -312,39 +407,70 @@
         <div class="layout">
           <section class="card">
             <div class="panel-title">
-              <h2>Toolbox</h2>
+              <h2>Tool Command Center</h2>
               <span class="orange">READY</span>
             </div>
 
             <div class="tool-grid">
               <div class="tool" onclick="showAI()">
+                <div class="tool-icon">◆</div>
                 <strong>AI Assist</strong>
-                <p>Ask field questions and get direct troubleshooting guidance.</p>
+                <p>Ask field questions and receive direct diagnostic guidance.</p>
               </div>
 
               <div class="tool" onclick="showTroubleshoot()">
+                <div class="tool-icon">⚠</div>
                 <strong>Troubleshooting</strong>
-                <p>Guided diagnostics for valves, loops, PLCs, telemetry, and RF.</p>
+                <p>Guided workflows for valves, loops, PLCs, RF, and telemetry.</p>
               </div>
 
               <div class="tool" onclick="showCalculator()">
+                <div class="tool-icon">⌁</div>
                 <strong>Calculators</strong>
                 <p>Electrical, flow, pressure, level, and instrumentation formulas.</p>
               </div>
 
               <div class="tool" onclick="showLoop()">
+                <div class="tool-icon">⟲</div>
                 <strong>4-20mA Loop</strong>
-                <p>Check expected current, loop resistance, and signal issues.</p>
+                <p>Check measured current, range status, and common loop faults.</p>
               </div>
             </div>
           </section>
 
           <section class="card">
-            <h2>Recent Diagnostic</h2>
-            <h3>FS-24117</h3>
-            <p><strong>Issue:</strong> High treating pressure</p>
-            <p><strong>Status:</strong> <span class="orange">In Progress</span></p>
-            <p><strong>Recommendation:</strong> Verify pressure transmitter and inspect restriction points.</p>
+            <div class="panel-title">
+              <h2>Recent Cases</h2>
+              <span class="blue">LIVE</span>
+            </div>
+
+            <table>
+              <tr>
+                <th>Case</th>
+                <th>Fault</th>
+                <th>Status</th>
+              </tr>
+              <tr>
+                <td>FS-24117</td>
+                <td>High Treating Pressure</td>
+                <td class="orange">In Progress</td>
+              </tr>
+              <tr>
+                <td>FS-24116</td>
+                <td>Bad Pump Rate</td>
+                <td class="yellow">Review</td>
+              </tr>
+              <tr>
+                <td>FS-24115</td>
+                <td>Radio Dropout</td>
+                <td class="blue">Investigating</td>
+              </tr>
+              <tr>
+                <td>FS-24114</td>
+                <td>Loop Signal Low</td>
+                <td class="green">Resolved</td>
+              </tr>
+            </table>
           </section>
         </div>
       `;
@@ -353,9 +479,12 @@
     function showAI() {
       content.innerHTML = `
         <section class="card">
-          <h2>AI Assist</h2>
-          <p>Ask a field question.</p>
+          <div class="panel-title">
+            <h2>AI Assist</h2>
+            <span class="blue">BETA</span>
+          </div>
 
+          <label>Field Question</label>
           <input id="question" placeholder="Example: Why is my control valve hunting?" />
 
           <button class="primary" onclick="askAI()">Run Diagnostic</button>
@@ -373,28 +502,30 @@
 
       if (q.includes("valve") || q.includes("hunting")) {
         response.innerHTML =
-          "<strong>Likely Fault:</strong> Valve instability or stiction.<br><br>" +
-          "1. Verify instrument air supply.<br>" +
-          "2. Check positioner feedback.<br>" +
-          "3. Inspect for sticking stem or actuator binding.<br>" +
-          "4. Review controller tuning.";
+          "<strong class='orange'>Likely Fault:</strong> Valve instability, stiction, or poor control tuning.<br><br>" +
+          "<strong>Recommended Checks:</strong><br>" +
+          "1. Verify instrument air supply pressure.<br>" +
+          "2. Check positioner feedback and travel calibration.<br>" +
+          "3. Inspect stem packing, actuator binding, and linkage.<br>" +
+          "4. Review PID tuning and process stability.<br><br>" +
+          "<strong>Field Note:</strong> If movement is jerky, suspect mechanical stiction before changing tuning.";
       } else if (q.includes("loop") || q.includes("4-20")) {
         response.innerHTML =
-          "<strong>Likely Fault:</strong> Loop signal issue.<br><br>" +
+          "<strong class='orange'>Likely Fault:</strong> Loop signal or power issue.<br><br>" +
           "1. Confirm 24VDC supply.<br>" +
-          "2. Measure current in series.<br>" +
-          "3. Check total loop resistance.<br>" +
+          "2. Measure loop current in series.<br>" +
+          "3. Check total resistance and terminal connections.<br>" +
           "4. Verify PLC/DCS input scaling.";
-      } else if (q.includes("radio") || q.includes("cell")) {
+      } else if (q.includes("radio") || q.includes("cell") || q.includes("telemetry")) {
         response.innerHTML =
-          "<strong>Likely Fault:</strong> Communications issue.<br><br>" +
-          "1. Check signal strength.<br>" +
-          "2. Verify antenna and coax connections.<br>" +
-          "3. Confirm modem power and SIM status.<br>" +
-          "4. Check network registration.";
+          "<strong class='orange'>Likely Fault:</strong> Communications path issue.<br><br>" +
+          "1. Check signal strength and network registration.<br>" +
+          "2. Verify antenna, coax, and grounding.<br>" +
+          "3. Confirm modem power and configuration.<br>" +
+          "4. Check SCADA polling and protocol settings.";
       } else {
         response.innerHTML =
-          "<strong>General Diagnostic:</strong><br><br>" +
+          "<strong class='orange'>General Diagnostic:</strong><br><br>" +
           "Start with power, signal, configuration, and mechanical condition. Isolate one section at a time.";
       }
     }
@@ -402,25 +533,35 @@
     function showTroubleshoot() {
       content.innerHTML = `
         <section class="card">
-          <h2>Guided Troubleshooting</h2>
+          <div class="panel-title">
+            <h2>Guided Troubleshooting</h2>
+            <span class="orange">STEP MODE</span>
+          </div>
 
-          <label>System Type</label>
-          <select id="systemType">
-            <option value="valve">Control Valve</option>
-            <option value="loop">4-20mA Loop</option>
-            <option value="plc">PLC / Logic</option>
-            <option value="telemetry">Telemetry / RF</option>
-          </select>
+          <div class="diagnostic-grid">
+            <div>
+              <label>System Type</label>
+              <select id="systemType">
+                <option value="Control Valve">Control Valve</option>
+                <option value="4-20mA Loop">4-20mA Loop</option>
+                <option value="PLC / Logic">PLC / Logic</option>
+                <option value="Telemetry / RF">Telemetry / RF</option>
+                <option value="Electrical">Electrical</option>
+              </select>
+            </div>
 
-          <label>Symptom</label>
-          <select id="symptom">
-            <option value="intermittent">Intermittent Failure</option>
-            <option value="dead">No Signal / Dead</option>
-            <option value="unstable">Unstable / Hunting</option>
-            <option value="badreading">Bad Reading</option>
-          </select>
+            <div>
+              <label>Symptom</label>
+              <select id="symptom">
+                <option value="Intermittent Failure">Intermittent Failure</option>
+                <option value="No Signal / Dead">No Signal / Dead</option>
+                <option value="Unstable / Hunting">Unstable / Hunting</option>
+                <option value="Bad Reading">Bad Reading</option>
+              </select>
+            </div>
+          </div>
 
-          <button class="primary" onclick="runTroubleshoot()">Generate Steps</button>
+          <button class="primary" onclick="runTroubleshoot()">Generate Field Steps</button>
 
           <div id="troubleResult" class="result">Awaiting selection.</div>
         </section>
@@ -430,28 +571,34 @@
     function runTroubleshoot() {
       const system = document.getElementById("systemType").value;
       const symptom = document.getElementById("symptom").value;
-      const result = document.getElementById("troubleResult");
 
-      result.innerHTML =
-        "<strong>Recommended First Checks:</strong><br><br>" +
-        "1. Confirm power and signal at the device.<br>" +
-        "2. Check wiring, terminations, and grounding.<br>" +
-        "3. Compare field measurement to PLC/DCS value.<br>" +
-        "4. Document readings before making changes.<br><br>" +
-        "<span class='orange'>Selected:</span> " + system + " / " + symptom;
+      document.getElementById("troubleResult").innerHTML =
+        "<strong class='orange'>Diagnostic Path:</strong> " + system + " / " + symptom + "<br><br>" +
+        "1. Confirm power and signal at the field device.<br>" +
+        "2. Check wiring, terminals, shields, fuses, and grounding.<br>" +
+        "3. Compare field measurement against PLC/DCS displayed value.<br>" +
+        "4. Check configuration, scaling, and calibration.<br>" +
+        "5. Document readings before making changes.";
     }
 
     function showCalculator() {
       content.innerHTML = `
         <section class="card">
-          <h2>Electrical Calculator</h2>
-          <p>Ohm’s Law: Current = Voltage ÷ Resistance</p>
+          <div class="panel-title">
+            <h2>Electrical Calculator</h2>
+            <span class="blue">OHM'S LAW</span>
+          </div>
 
-          <label>Voltage (V)</label>
-          <input id="voltage" type="number" placeholder="Example: 24" />
-
-          <label>Resistance (Ω)</label>
-          <input id="resistance" type="number" placeholder="Example: 250" />
+          <div class="diagnostic-grid">
+            <div>
+              <label>Voltage (V)</label>
+              <input id="voltage" type="number" placeholder="Example: 24" />
+            </div>
+            <div>
+              <label>Resistance (Ω)</label>
+              <input id="resistance" type="number" placeholder="Example: 250" />
+            </div>
+          </div>
 
           <button class="primary" onclick="calculateCurrent()">Calculate Current</button>
 
@@ -463,26 +610,29 @@
     function calculateCurrent() {
       const v = Number(document.getElementById("voltage").value);
       const r = Number(document.getElementById("resistance").value);
-      const result = document.getElementById("calcResult");
 
       if (!v || !r) {
-        result.innerHTML = "Enter both voltage and resistance.";
+        document.getElementById("calcResult").innerHTML = "Enter both voltage and resistance.";
         return;
       }
 
       const amps = v / r;
       const milliamps = amps * 1000;
 
-      result.innerHTML =
-        "<strong>Result:</strong><br>" +
+      document.getElementById("calcResult").innerHTML =
+        "<strong class='orange'>Result:</strong><br>" +
         amps.toFixed(3) + " A<br>" +
-        milliamps.toFixed(1) + " mA";
+        milliamps.toFixed(1) + " mA<br><br>" +
+        "<strong>Formula:</strong> I = V ÷ R";
     }
 
     function showLoop() {
       content.innerHTML = `
         <section class="card">
-          <h2>4-20mA Loop Diagnostic</h2>
+          <div class="panel-title">
+            <h2>4-20mA Loop Diagnostic</h2>
+            <span class="green">SIGNAL CHECK</span>
+          </div>
 
           <label>Measured Current (mA)</label>
           <input id="ma" type="number" placeholder="Example: 11.8" />
@@ -504,11 +654,17 @@
       }
 
       if (ma < 3.8) {
-        result.innerHTML = "<strong>Status:</strong> Fault / Under-range<br>Check power supply, wiring, and transmitter output.";
+        result.innerHTML =
+          "<strong class='orange'>Status:</strong> Fault / Under-range<br><br>" +
+          "Check power supply, wiring continuity, transmitter output, and loop resistance.";
       } else if (ma >= 3.8 && ma <= 20.5) {
-        result.innerHTML = "<strong>Status:</strong> Normal signal range<br>Verify scaling if reading is still incorrect.";
+        result.innerHTML =
+          "<strong class='green'>Status:</strong> Normal signal range<br><br>" +
+          "If reading is still wrong, verify scaling, calibration, and sensor range.";
       } else {
-        result.innerHTML = "<strong>Status:</strong> Over-range<br>Check transmitter range, process condition, and scaling.";
+        result.innerHTML =
+          "<strong class='orange'>Status:</strong> Over-range<br><br>" +
+          "Check process condition, transmitter range, and PLC/DCS input scaling.";
       }
     }
 
