@@ -1,0 +1,50 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #202020;
+  color: white;
+}
+
+.container {
+  text-align: center;
+  padding: 40px;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+.accent {
+  color: #FF5A1F;
+}
+
+.tagline {
+  color: #aaa;
+  margin-bottom: 30px;
+}
+
+.grid {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+button {
+  background: #FF5A1F;
+  border: none;
+  padding: 15px 20px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ff7a40;
+}
+
+.screen {
+  border: 1px solid #444;
+  padding: 20px;
+  min-height: 100px;
+}
