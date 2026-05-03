@@ -531,43 +531,128 @@
     }
 
     function showTroubleshoot() {
-      content.innerHTML = `
-        <section class="card">
-          <div class="panel-title">
-            <h2>Guided Troubleshooting</h2>
-            <span class="orange">STEP MODE</span>
-          </div>
+     function showTroubleshoot() {
+  content.innerHTML = `
+    <section class="card">
+      <div class="panel-title">
+        <h2>Guided Troubleshooting</h2>
+        <span class="orange">DIAGNOSTIC ENGINE</span>
+      </div>
 
-          <div class="diagnostic-grid">
-            <div>
-              <label>System Type</label>
-              <select id="systemType">
-                <option value="Control Valve">Control Valve</option>
-                <option value="4-20mA Loop">4-20mA Loop</option>
-                <option value="PLC / Logic">PLC / Logic</option>
-                <option value="Telemetry / RF">Telemetry / RF</option>
-                <option value="Electrical">Electrical</option>
-              </select>
-            </div>
+      <label>Select Fault Type</label>
+      <select id="faultType">
+        <option value="valveHunting">Control Valve Hunting / Oscillating</option>
+        <option value="valveNoMove">Control Valve Not Moving</option>
+        <option value="loopLow">4-20mA Loop Low / Dead</option>
+        <option value="badReading">Bad Transmitter Reading</option>
+        <option value="commsDropout">Radio / Cellular Dropout</option>
+      </select>
 
-            <div>
-              <label>Symptom</label>
-              <select id="symptom">
-                <option value="Intermittent Failure">Intermittent Failure</option>
-                <option value="No Signal / Dead">No Signal / Dead</option>
-                <option value="Unstable / Hunting">Unstable / Hunting</option>
-                <option value="Bad Reading">Bad Reading</option>
-              </select>
-            </div>
-          </div>
+      <button class="primary" onclick="runTroubleshoot()">Generate Diagnostic Steps</button>
 
-          <button class="primary" onclick="runTroubleshoot()">Generate Field Steps</button>
+      <div id="troubleResult" class="result">Awaiting fault selection.</div>
+    </section>
+  `;
+}
 
-          <div id="troubleResult" class="result">Awaiting selection.</div>
-        </section>
-      `;
-    }
+function runTroubleshoot() {
+  const fault = document.getElementById("faultType").value;
+  const result = document.getElementById("troubleResult");
 
+  if (fault === "valveHunting") {
+    result.innerHTML = `
+      <strong class="orange">Fault:</strong> Control Valve Hunting / Oscillating<br><br>
+      <strong>Likely Causes:</strong><br>
+      • Positioner tuning issue<br>
+      • Sticky valve stem or packing<br>
+      • Low or unstable instrument air<br>
+      • Controller PID tuning too aggressive<br><br>
+      <strong>Field Steps:</strong><br>
+      1. Check instrument air pressure at actuator.<br>
+      2. Stroke valve manually if safe to do so.<br>
+      3. Watch for jerky movement or delayed response.<br>
+      4. Verify positioner calibration and feedback.<br>
+      5. Review controller tuning only after mechanical checks.<br><br>
+      <strong>Rule:</strong> Fix mechanical stiction before changing PID tuning.
+    `;
+  }
+
+  if (fault === "valveNoMove") {
+    result.innerHTML = `
+      <strong class="orange">Fault:</strong> Control Valve Not Moving<br><br>
+      <strong>Likely Causes:</strong><br>
+      • No instrument air<br>
+      • Failed I/P or positioner<br>
+      • Broken linkage<br>
+      • Valve seized<br>
+      • No control signal<br><br>
+      <strong>Field Steps:</strong><br>
+      1. Verify command signal from PLC/DCS.<br>
+      2. Check 4-20mA signal at positioner or I/P.<br>
+      3. Confirm air supply pressure.<br>
+      4. Inspect tubing, regulator, and air filter.<br>
+      5. Check actuator movement and linkage.<br><br>
+      <strong>Rule:</strong> Signal + air + no movement usually points to actuator, positioner, or mechanical binding.
+    `;
+  }
+
+  if (fault === "loopLow") {
+    result.innerHTML = `
+      <strong class="orange">Fault:</strong> 4-20mA Loop Low / Dead<br><br>
+      <strong>Likely Causes:</strong><br>
+      • No 24VDC loop power<br>
+      • Open wire or blown fuse<br>
+      • Bad transmitter<br>
+      • Incorrect wiring polarity<br>
+      • Excessive loop resistance<br><br>
+      <strong>Field Steps:</strong><br>
+      1. Check 24VDC supply.<br>
+      2. Measure current in series, not parallel.<br>
+      3. Check fuse, terminal blocks, and wiring continuity.<br>
+      4. Verify transmitter polarity.<br>
+      5. Disconnect field device and test loop with simulator.<br><br>
+      <strong>Rule:</strong> If simulator works at PLC/DCS input, field device or field wiring is suspect.
+    `;
+  }
+
+  if (fault === "badReading") {
+    result.innerHTML = `
+      <strong class="orange">Fault:</strong> Bad Transmitter Reading<br><br>
+      <strong>Likely Causes:</strong><br>
+      • Incorrect scaling<br>
+      • Calibration drift<br>
+      • Plugged impulse line<br>
+      • Bad sensor<br>
+      • Wrong engineering units<br><br>
+      <strong>Field Steps:</strong><br>
+      1. Compare local reading to PLC/DCS value.<br>
+      2. Check LRV and URV in transmitter configuration.<br>
+      3. Verify PLC/DCS scaling matches transmitter range.<br>
+      4. Inspect impulse lines, taps, and isolation valves.<br>
+      5. Apply known input and verify output current.<br><br>
+      <strong>Rule:</strong> If mA is correct but display is wrong, suspect scaling.
+    `;
+  }
+
+  if (fault === "commsDropout") {
+    result.innerHTML = `
+      <strong class="orange">Fault:</strong> Radio / Cellular Dropout<br><br>
+      <strong>Likely Causes:</strong><br>
+      • Weak signal<br>
+      • Antenna or coax issue<br>
+      • Power problem<br>
+      • Bad modem configuration<br>
+      • SCADA polling issue<br><br>
+      <strong>Field Steps:</strong><br>
+      1. Check modem or radio power supply voltage.<br>
+      2. Verify antenna connection and coax condition.<br>
+      3. Check signal strength / RSSI.<br>
+      4. Confirm SIM, APN, or radio network settings.<br>
+      5. Verify SCADA polling and protocol configuration.<br><br>
+      <strong>Rule:</strong> Intermittent comms often trace back to power, antenna, grounding, or weak signal.
+    `;
+  }
+}
     function runTroubleshoot() {
       const system = document.getElementById("systemType").value;
       const symptom = document.getElementById("symptom").value;
