@@ -582,30 +582,120 @@
     }
 
     function showCalculator() {
-      content.innerHTML = `
-        <section class="card">
-          <div class="panel-title">
-            <h2>Electrical Calculator</h2>
-            <span class="blue">OHM'S LAW</span>
-          </div>
+      function showCalculator() {
+  content.innerHTML = `
+    <section class="card">
+      <div class="panel-title">
+        <h2>Instrumentation Calculators</h2>
+        <span class="blue">FIELD TOOLS</span>
+      </div>
 
-          <div class="diagnostic-grid">
-            <div>
-              <label>Voltage (V)</label>
-              <input id="voltage" type="number" placeholder="Example: 24" />
-            </div>
-            <div>
-              <label>Resistance (Ω)</label>
-              <input id="resistance" type="number" placeholder="Example: 250" />
-            </div>
-          </div>
+      <label>Calculator Type</label>
+      <select id="calcType" onchange="renderCalc()">
+        <option value="maToPercent">mA → Percent</option>
+        <option value="percentToMa">Percent → mA</option>
+        <option value="maToValue">mA → Process Value</option>
+        <option value="valueToMa">Process Value → mA</option>
+      </select>
 
-          <button class="primary" onclick="calculateCurrent()">Calculate Current</button>
+      <div id="calcInputs"></div>
 
-          <div id="calcResult" class="result">Awaiting values.</div>
-        </section>
-      `;
-    }
+      <button class="primary" onclick="runCalc()">Calculate</button>
+
+      <div id="calcResult" class="result">Awaiting input.</div>
+    </section>
+  `;
+
+  renderCalc();
+}
+
+function renderCalc() {
+  const type = document.getElementById("calcType").value;
+  const inputs = document.getElementById("calcInputs");
+
+  if (type === "maToPercent") {
+    inputs.innerHTML = `
+      <label>Measured Current (mA)</label>
+      <input id="ma" type="number" placeholder="Example: 12" />
+    `;
+  }
+
+  if (type === "percentToMa") {
+    inputs.innerHTML = `
+      <label>Percent (%)</label>
+      <input id="percent" type="number" placeholder="Example: 50" />
+    `;
+  }
+
+  if (type === "maToValue") {
+    inputs.innerHTML = `
+      <label>Measured Current (mA)</label>
+      <input id="ma" type="number" placeholder="Example: 12" />
+
+      <label>Lower Range Value (LRV)</label>
+      <input id="lrv" type="number" placeholder="Example: 0" />
+
+      <label>Upper Range Value (URV)</label>
+      <input id="urv" type="number" placeholder="Example: 100" />
+    `;
+  }
+
+  if (type === "valueToMa") {
+    inputs.innerHTML = `
+      <label>Process Value</label>
+      <input id="value" type="number" placeholder="Example: 50" />
+
+      <label>Lower Range Value (LRV)</label>
+      <input id="lrv" type="number" placeholder="Example: 0" />
+
+      <label>Upper Range Value (URV)</label>
+      <input id="urv" type="number" placeholder="Example: 100" />
+    `;
+  }
+}
+
+function runCalc() {
+  const type = document.getElementById("calcType").value;
+  const result = document.getElementById("calcResult");
+
+  if (type === "maToPercent") {
+    const ma = Number(document.getElementById("ma").value);
+    const percent = ((ma - 4) / 16) * 100;
+    result.innerHTML = `<strong class="orange">Result:</strong><br>${percent.toFixed(2)} %`;
+  }
+
+  if (type === "percentToMa") {
+    const percent = Number(document.getElementById("percent").value);
+    const ma = 4 + (percent / 100) * 16;
+    result.innerHTML = `<strong class="orange">Result:</strong><br>${ma.toFixed(2)} mA`;
+  }
+
+  if (type === "maToValue") {
+    const ma = Number(document.getElementById("ma").value);
+    const lrv = Number(document.getElementById("lrv").value);
+    const urv = Number(document.getElementById("urv").value);
+
+    const percent = (ma - 4) / 16;
+    const value = lrv + percent * (urv - lrv);
+
+    result.innerHTML =
+      `<strong class="orange">Process Value:</strong><br>${value.toFixed(2)}<br><br>` +
+      `<strong>Percent:</strong> ${(percent * 100).toFixed(2)} %`;
+  }
+
+  if (type === "valueToMa") {
+    const value = Number(document.getElementById("value").value);
+    const lrv = Number(document.getElementById("lrv").value);
+    const urv = Number(document.getElementById("urv").value);
+
+    const percent = (value - lrv) / (urv - lrv);
+    const ma = 4 + percent * 16;
+
+    result.innerHTML =
+      `<strong class="orange">Loop Current:</strong><br>${ma.toFixed(2)} mA<br><br>` +
+      `<strong>Percent:</strong> ${(percent * 100).toFixed(2)} %`;
+  }
+}
 
     function calculateCurrent() {
       const v = Number(document.getElementById("voltage").value);
