@@ -17,7 +17,7 @@ body {
 
 .app {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 250px 1fr;
   min-height: 100vh;
 }
 
@@ -25,32 +25,29 @@ body {
 .sidebar {
   background: #0c0f12;
   border-right: 1px solid #2e3338;
-  padding: 20px 16px;
+  padding: 20px;
 }
 
-/* FIXED LOGO ALIGNMENT */
 .logo {
   font-size: 22px;
   font-weight: 900;
   letter-spacing: 3px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  line-height: 1.2;
 }
 
 .logo span {
+  display: inline-block;
+  margin-top: 6px;
   color: #ff5a1f;
   border: 2px solid #ff5a1f;
-  border-radius: 6px;
   padding: 2px 8px;
-  width: fit-content;
+  border-radius: 6px;
 }
 
 .powered {
   color: #999;
   font-size: 11px;
-  margin: 12px 0 25px;
-  text-transform: uppercase;
+  margin: 10px 0 25px;
 }
 
 /* NAV */
@@ -59,11 +56,9 @@ body {
   background: #12161a;
   color: white;
   border: 1px solid #30353a;
-  border-radius: 8px;
   padding: 14px;
   margin-bottom: 10px;
   text-align: left;
-  font-weight: 700;
   cursor: pointer;
 }
 
@@ -74,111 +69,67 @@ body {
 
 /* MAIN */
 .main {
-  padding: 26px;
+  padding: 25px;
 }
 
 /* HERO */
 .hero {
-  background: linear-gradient(135deg, #12161a, #07090a);
   border: 1px solid #30353a;
-  border-radius: 14px;
-  padding: 26px;
+  padding: 20px;
   margin-bottom: 20px;
 }
 
 .hero h1 {
   margin: 0;
-  font-size: 32px;
-  letter-spacing: 4px;
+  font-size: 30px;
 }
-
-.hero p {
-  color: #aaa;
-  margin-top: 10px;
-}
-
-.tagline {
-  margin-top: 15px;
-  letter-spacing: 3px;
-  font-weight: bold;
-}
-
-.tagline span { color: #ff5a1f; }
 
 /* METRICS (CLEARED) */
 .metrics {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 12px;
   margin-bottom: 20px;
 }
 
 .card {
   background: #15191e;
   border: 1px solid #30353a;
-  border-radius: 12px;
-  padding: 18px;
+  padding: 16px;
 }
 
 .metric {
-  font-size: 28px;
-  font-weight: 900;
+  font-size: 26px;
+  font-weight: bold;
 }
 
 .orange { color: #ff5a1f; }
 .blue { color: #1e90ff; }
 .green { color: #22c55e; }
 
-/* TOOL GRID */
-.tool-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-}
-
-.tool {
-  background: #090b0d;
-  border: 1px solid #323840;
-  border-radius: 10px;
-  padding: 16px;
-  cursor: pointer;
-}
-
-.tool:hover {
-  border-color: #ff5a1f;
-}
-
 /* FORM */
 input, select {
   width: 100%;
-  background: #0b0d0f;
-  border: 1px solid #3a4047;
+  padding: 10px;
+  margin: 10px 0;
+  background: #0f1215;
+  border: 1px solid #333;
   color: white;
-  padding: 12px;
-  margin: 8px 0;
 }
 
 button.primary {
   width: 100%;
+  padding: 12px;
   background: #ff5a1f;
   border: none;
-  padding: 14px;
-  font-weight: bold;
   cursor: pointer;
 }
 
 .result {
   margin-top: 12px;
-  padding: 14px;
-  background: #0b0d0f;
+  padding: 12px;
+  background: #0f1215;
   border-left: 4px solid #ff5a1f;
-}
-
-/* MOBILE */
-@media (max-width: 900px) {
-  .app { grid-template-columns: 1fr; }
-  .metrics { grid-template-columns: 1fr; }
-  .tool-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -190,7 +141,7 @@ button.primary {
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="logo">
-      FIELD LOGIC
+      FIELD LOGIC<br>
       <span>IQ</span>
     </div>
 
@@ -198,6 +149,8 @@ button.primary {
 
     <div class="nav">
       <button onclick="showHome()">Dashboard</button>
+      <button onclick="showAI()">AI Assist</button>
+      <button onclick="showTroubleshoot()">Troubleshooting</button>
       <button onclick="showCalculator()">Calculators</button>
       <button onclick="showLoop()">4-20mA Loop</button>
     </div>
@@ -206,19 +159,18 @@ button.primary {
   <!-- MAIN -->
   <main class="main">
 
-    <section class="hero">
+    <div class="hero">
       <h1>Field Intelligence Console</h1>
-      <p>Industrial tools for instrumentation, automation, and field diagnostics.</p>
-      <div class="tagline">Find the <span>Fault</span>. Fix the <span>Flow</span>.</div>
-    </section>
+      <p>Find the Fault. Fix the Flow.</p>
+    </div>
 
     <!-- CLEARED METRICS -->
-  <section class="metrics">
-  <div class="card"><h3>Active Cases</h3><div class="metric orange">--</div></div>
-  <div class="card"><h3>Critical Alerts</h3><div class="metric orange">--</div></div>
-  <div class="card"><h3>Resolved Today</h3><div class="metric blue">--</div></div>
-  <div class="card"><h3>System Health</h3><div class="metric green">--</div></div>
-</section>
+    <section class="metrics">
+      <div class="card"><div class="metric orange">--</div>Active Cases</div>
+      <div class="card"><div class="metric orange">--</div>Critical Alerts</div>
+      <div class="card"><div class="metric blue">--</div>Resolved Today</div>
+      <div class="card"><div class="metric green">--</div>System Health</div>
+    </section>
 
     <div id="content"></div>
 
@@ -231,78 +183,97 @@ const content = document.getElementById("content");
 
 /* HOME */
 function showHome() {
+  content.innerHTML = "<div class='card'>Select a tool from the sidebar.</div>";
+}
+
+/* AI */
+function showAI() {
   content.innerHTML = `
     <div class="card">
-      <h2>Tool Command Center</h2>
-      <div class="tool-grid">
-        <div class="tool" onclick="showCalculator()">Instrumentation Calculators</div>
-        <div class="tool" onclick="showLoop()">4-20mA Loop Diagnostics</div>
-      </div>
+      <h2>AI Assist</h2>
+      <input id="q" placeholder="Ask a field question"/>
+      <button class="primary" onclick="runAI()">Run</button>
+      <div id="aiRes" class="result"></div>
     </div>
   `;
+}
+
+function runAI() {
+  const q = document.getElementById("q").value.toLowerCase();
+  const r = document.getElementById("aiRes");
+
+  if (q.includes("valve")) {
+    r.innerHTML = "Check air, positioner, and stiction.";
+  } else if (q.includes("loop")) {
+    r.innerHTML = "Check power, wiring, and signal.";
+  } else {
+    r.innerHTML = "Check power, signal, and configuration.";
+  }
+}
+
+/* TROUBLESHOOT */
+function showTroubleshoot() {
+  content.innerHTML = `
+    <div class="card">
+      <h2>Troubleshooting</h2>
+      <select id="fault">
+        <option value="valve">Valve Issue</option>
+        <option value="loop">Loop Issue</option>
+      </select>
+      <button class="primary" onclick="runTS()">Run</button>
+      <div id="tsRes" class="result"></div>
+    </div>
+  `;
+}
+
+function runTS() {
+  const f = document.getElementById("fault").value;
+  const r = document.getElementById("tsRes");
+
+  if (f === "valve") {
+    r.innerHTML = "Check actuator, air, and tuning.";
+  } else {
+    r.innerHTML = "Check power supply and wiring.";
+  }
 }
 
 /* CALCULATOR */
 function showCalculator() {
   content.innerHTML = `
     <div class="card">
-      <h2>mA Calculator</h2>
-
-      <select id="type">
-        <option value="maToPercent">mA → %</option>
-        <option value="percentToMa">% → mA</option>
-      </select>
-
-      <input id="val" placeholder="Enter value" />
-
-      <button class="primary" onclick="calc()">Calculate</button>
-      <div id="res" class="result"></div>
+      <h2>Calculator</h2>
+      <input id="ma" placeholder="mA"/>
+      <button class="primary" onclick="calc()">Convert to %</button>
+      <div id="calcRes" class="result"></div>
     </div>
   `;
 }
 
 function calc() {
-  const type = document.getElementById("type").value;
-  const val = Number(document.getElementById("val").value);
-  const res = document.getElementById("res");
-
-  if (!val && val !== 0) {
-    res.innerHTML = "Enter a value";
-    return;
-  }
-
-  if (type === "maToPercent") {
-    res.innerHTML = ((val - 4) / 16 * 100).toFixed(2) + "%";
-  } else {
-    res.innerHTML = (4 + (val / 100 * 16)).toFixed(2) + " mA";
-  }
+  const ma = Number(document.getElementById("ma").value);
+  document.getElementById("calcRes").innerHTML =
+    ((ma - 4) / 16 * 100).toFixed(2) + "%";
 }
 
-/* LOOP TOOL */
+/* LOOP */
 function showLoop() {
   content.innerHTML = `
     <div class="card">
       <h2>Loop Diagnostic</h2>
-
-      <input id="ma" placeholder="Measured mA" />
-
-      <button class="primary" onclick="loop()">Run</button>
+      <input id="loop" placeholder="mA"/>
+      <button class="primary" onclick="runLoop()">Run</button>
       <div id="loopRes" class="result"></div>
     </div>
   `;
 }
 
-function loop() {
-  const ma = Number(document.getElementById("ma").value);
+function runLoop() {
+  const ma = Number(document.getElementById("loop").value);
   const r = document.getElementById("loopRes");
 
-  if (ma < 3.8) {
-    r.innerHTML = "Under-range fault. Check power and wiring.";
-  } else if (ma <= 20.5) {
-    r.innerHTML = "Signal normal.";
-  } else {
-    r.innerHTML = "Over-range. Check transmitter.";
-  }
+  if (ma < 3.8) r.innerHTML = "Under-range fault";
+  else if (ma <= 20.5) r.innerHTML = "Normal";
+  else r.innerHTML = "Over-range";
 }
 
 showHome();
