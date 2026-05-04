@@ -1,284 +1,1028 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Field Logic IQ</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Field Logic IQ | Powered by FaultLine Energy</title>
+  <meta name="description" content="Field Logic IQ: Find the Fault. Fix the System. Industrial field diagnostic platform powered by FaultLine Energy." />
+  <style>
+    :root {
+      --bg: #0b0f12;
+      --bg-2: #10161b;
+      --panel: #151d23;
+      --panel-2: #1b252d;
+      --panel-3: #222e38;
+      --line: #34414b;
+      --line-2: #4b5a65;
+      --text: #eef3f6;
+      --muted: #a7b3bb;
+      --dim: #73818b;
+      --brand: #ff9d2e;
+      --brand-2: #ffd166;
+      --ok: #35d07f;
+      --warn: #ffcc4d;
+      --bad: #ff5c5c;
+      --info: #5bbcff;
+      --steel: #8da1ad;
+      --shadow: 0 22px 80px rgba(0,0,0,.38);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
 
-<style>
-* { box-sizing: border-box; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 0%, rgba(255,157,46,.12), transparent 30%),
+        radial-gradient(circle at 80% 20%, rgba(91,188,255,.08), transparent 30%),
+        linear-gradient(135deg, #070a0d 0%, var(--bg) 50%, #111820 100%);
+      overflow: hidden;
+    }
 
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #080a0c;
-  color: white;
-}
+    .app {
+      display: grid;
+      grid-template-columns: 296px 1fr;
+      height: 100vh;
+      min-width: 1180px;
+    }
 
-.app {
-  display: grid;
-  grid-template-columns: 250px 1fr;
-  min-height: 100vh;
-}
+    .sidebar {
+      border-right: 1px solid rgba(255,255,255,.09);
+      background:
+        linear-gradient(180deg, rgba(255,157,46,.08), transparent 22%),
+        linear-gradient(180deg, #111820, #0c1115);
+      padding: 22px 18px;
+      overflow: auto;
+      box-shadow: inset -1px 0 0 rgba(0,0,0,.3);
+    }
 
-/* SIDEBAR */
-.sidebar {
-  background: #0c0f12;
-  border-right: 1px solid #2e3338;
-  padding: 20px;
-}
+    .brand-block {
+      border: 1px solid rgba(255,157,46,.3);
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(255,157,46,.16), rgba(255,255,255,.035));
+      padding: 18px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-block:after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -40px auto;
+      width: 130px;
+      height: 130px;
+      background: repeating-linear-gradient(45deg, rgba(255,157,46,.17) 0 8px, transparent 8px 16px);
+      transform: rotate(8deg);
+      opacity: .55;
+    }
+    .brand-kicker { color: var(--brand-2); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; }
+    .brand-name { font-size: 25px; line-height: 1; font-weight: 900; margin: 8px 0 8px; }
+    .powered { color: var(--muted); font-size: 12px; }
+    .tagline { color: var(--text); font-size: 13px; margin-top: 12px; font-weight: 700; }
 
-.logo {
-  font-size: 22px;
-  font-weight: 900;
-  letter-spacing: 3px;
-  line-height: 1.2;
-}
+    .nav-label { color: var(--dim); font-size: 11px; text-transform: uppercase; letter-spacing: .14em; margin: 18px 8px 8px; font-weight: 800; }
+    .nav {
+      display: grid;
+      gap: 7px;
+    }
+    .nav button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 12px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      text-align: left;
+      font-weight: 760;
+      letter-spacing: .01em;
+    }
+    .nav button:hover { background: rgba(255,255,255,.055); color: var(--text); border-color: rgba(255,255,255,.08); }
+    .nav button.active {
+      color: #111820;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      border-color: rgba(255,255,255,.2);
+      box-shadow: 0 14px 32px rgba(255,157,46,.18);
+    }
+    .icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: inline-grid;
+      place-items: center;
+      background: rgba(255,255,255,.08);
+      font-size: 14px;
+      flex: 0 0 auto;
+    }
+    .active .icon { background: rgba(17,24,32,.14); }
 
-.logo span {
-  display: inline-block;
-  margin-top: 6px;
-  color: #ff5a1f;
-  border: 2px solid #ff5a1f;
-  padding: 2px 8px;
-  border-radius: 6px;
-}
+    .sidebar-footer {
+      margin-top: 22px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.035);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
 
-.powered {
-  color: #999;
-  font-size: 11px;
-  margin: 10px 0 25px;
-}
+    .main {
+      display: grid;
+      grid-template-rows: 76px 1fr;
+      min-width: 0;
+      overflow: hidden;
+    }
 
-/* NAV */
-.nav button {
-  width: 100%;
-  background: #12161a;
-  color: white;
-  border: 1px solid #30353a;
-  padding: 14px;
-  margin-bottom: 10px;
-  text-align: left;
-  cursor: pointer;
-}
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 16px 26px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: rgba(16,22,27,.72);
+      backdrop-filter: blur(14px);
+    }
+    .crumb { color: var(--muted); font-size: 13px; }
+    .page-title { font-size: 22px; font-weight: 900; margin-top: 2px; }
+    .top-actions { display: flex; gap: 10px; align-items: center; }
 
-.nav button:hover {
-  border-color: #ff5a1f;
-  color: #ff5a1f;
-}
+    .btn {
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 11px;
+      color: var(--text);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.035));
+      padding: 10px 13px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .btn:hover { border-color: rgba(255,157,46,.4); }
+    .btn.primary { color: #111820; background: linear-gradient(135deg, var(--brand), var(--brand-2)); border-color: transparent; }
+    .btn.danger { border-color: rgba(255,92,92,.35); color: #ffd4d4; }
+    .btn.small { padding: 7px 10px; font-size: 12px; border-radius: 9px; }
 
-/* MAIN */
-.main {
-  padding: 25px;
-}
+    .content {
+      overflow: auto;
+      padding: 26px;
+    }
 
-/* HERO */
-.hero {
-  border: 1px solid #30353a;
-  padding: 20px;
-  margin-bottom: 20px;
-}
+    .module { display: none; animation: rise .22s ease-out; }
+    .module.active { display: block; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-.hero h1 {
-  margin: 0;
-  font-size: 30px;
-}
+    .grid { display: grid; gap: 18px; }
+    .grid.two { grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
-/* METRICS (CLEARED) */
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
-}
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.026)), var(--panel);
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 17px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.075);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: rgba(255,255,255,.026);
+    }
+    .card-title { font-size: 15px; font-weight: 900; letter-spacing: .02em; }
+    .card-sub { color: var(--muted); font-size: 12px; margin-top: 3px; }
+    .card-body { padding: 18px; }
 
-.card {
-  background: #15191e;
-  border: 1px solid #30353a;
-  padding: 16px;
-}
+    .metric {
+      min-height: 112px;
+      padding: 18px;
+      background: linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      position: relative;
+    }
+    .metric:before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--brand), transparent);
+    }
+    .metric-label { color: var(--muted); text-transform: uppercase; letter-spacing: .12em; font-size: 11px; font-weight: 900; }
+    .metric-value { font-size: 28px; font-weight: 950; margin-top: 12px; color: var(--text); }
+    .metric-foot { color: var(--dim); font-size: 12px; margin-top: 8px; }
 
-.metric {
-  font-size: 26px;
-  font-weight: bold;
-}
+    label { display: block; color: var(--muted); font-size: 12px; font-weight: 800; margin: 0 0 7px; text-transform: uppercase; letter-spacing: .08em; }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.13);
+      background: rgba(6,10,12,.5);
+      color: var(--text);
+      border-radius: 11px;
+      padding: 11px 12px;
+      outline: none;
+      font: inherit;
+    }
+    textarea { min-height: 118px; resize: vertical; line-height: 1.45; }
+    input:focus, select:focus, textarea:focus { border-color: rgba(255,157,46,.65); box-shadow: 0 0 0 3px rgba(255,157,46,.1); }
+    .field-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; margin-bottom: 13px; }
+    .field-row.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .field-row.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
-.orange { color: #ff5a1f; }
-.blue { color: #1e90ff; }
-.green { color: #22c55e; }
+    .result-box {
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(0,0,0,.22);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      min-height: 80px;
+      font-family: var(--mono);
+      white-space: pre-wrap;
+      color: #dce8ef;
+      line-height: 1.5;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dim); }
+    .dot.ok { background: var(--ok); } .dot.warn { background: var(--warn); } .dot.bad { background: var(--bad); } .dot.info { background: var(--info); }
 
-/* FORM */
-input, select {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  background: #0f1215;
-  border: 1px solid #333;
-  color: white;
-}
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .tab-btn {
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      padding: 8px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 850;
+      font-size: 12px;
+    }
+    .tab-btn.active { background: rgba(255,157,46,.18); color: var(--brand-2); border-color: rgba(255,157,46,.35); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
 
-button.primary {
-  width: 100%;
-  padding: 12px;
-  background: #ff5a1f;
-  border: none;
-  cursor: pointer;
-}
+    .checklist { display: grid; gap: 10px; }
+    .check-item {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 10px;
+      align-items: start;
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.025);
+      border-radius: 12px;
+      padding: 11px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .check-item input { width: auto; margin-top: 2px; }
 
-.result {
-  margin-top: 12px;
-  padding: 12px;
-  background: #0f1215;
-  border-left: 4px solid #ff5a1f;
-}
-</style>
+    .table-wrap { overflow: auto; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 12px 13px; border-bottom: 1px solid rgba(255,255,255,.07); vertical-align: top; }
+    th { color: var(--brand-2); background: rgba(255,255,255,.04); font-size: 11px; text-transform: uppercase; letter-spacing: .1em; }
+    td { color: var(--muted); }
+    tr:last-child td { border-bottom: 0; }
+
+    .kb-list { display: grid; gap: 12px; }
+    .kb-item {
+      padding: 14px;
+      border-radius: 13px;
+      border: 1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.03);
+    }
+    .kb-item strong { color: var(--text); display: block; margin-bottom: 5px; }
+    .kb-item p { color: var(--muted); margin: 0; line-height: 1.45; font-size: 13px; }
+
+    .report-page {
+      background: #f6f7f8;
+      color: #1a232b;
+      border-radius: 12px;
+      padding: 28px;
+      min-height: 620px;
+      font-family: Arial, sans-serif;
+    }
+    .report-page h2 { margin: 0 0 6px; }
+    .report-page .muted { color: #52616b; }
+    .report-page table th { color: #1a232b; background: #e9edf0; }
+    .report-page table td { color: #1a232b; border-color: #d5dce1; }
+    .report-page .line { height: 1px; background: #cbd3d8; margin: 18px 0; }
+
+    .empty {
+      color: var(--dim);
+      border: 1px dashed rgba(255,255,255,.14);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      background: rgba(255,255,255,.025);
+    }
+
+    .footer-note { color: var(--dim); font-size: 12px; margin-top: 12px; line-height: 1.45; }
+
+    @media print {
+      body { background: white; overflow: visible; }
+      .sidebar, .topbar, .no-print { display: none !important; }
+      .app, .main, .content { display: block; height: auto; min-width: 0; padding: 0; overflow: visible; }
+      .module { display: none !important; }
+      #report.module { display: block !important; }
+      .card { border: none; box-shadow: none; background: white; }
+      .card-header { display: none; }
+      .report-page { border-radius: 0; min-height: auto; }
+    }
+  </style>
+  <!-- FaultLine-style visual upgrade overrides: self-contained, no external assets -->
+  <style id="faultline-style-upgrade">
+    :root{
+      --bg:#05080b;--bg-2:#081018;--panel:#0e151d;--panel-2:#121b25;--panel-3:#172332;
+      --line:rgba(255,255,255,.11);--line-2:rgba(255,90,31,.35);--text:#f6f7f8;--muted:#9aa6b2;--dim:#65727d;
+      --brand:#ff4b1f;--brand-2:#ff6a28;--ok:#35d07f;--warn:#ffb020;--bad:#ff4b1f;--info:#49b8ff;
+      --shadow:0 28px 90px rgba(0,0,0,.58);--radius:10px;--radius-sm:6px;
+    }
+    body{
+      background:
+        linear-gradient(120deg, rgba(255,75,31,.08), transparent 24%),
+        radial-gradient(circle at 14% 12%, rgba(255,255,255,.08), transparent 22%),
+        radial-gradient(circle at 84% 12%, rgba(73,184,255,.07), transparent 28%),
+        linear-gradient(135deg,#030507 0%,#071017 44%,#10151b 100%);
+      overflow:hidden;
+    }
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.12;background-image:
+      repeating-linear-gradient(160deg, transparent 0 36px, rgba(255,255,255,.08) 37px, transparent 39px),
+      linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);background-size:100% 100%,36px 36px,36px 36px;mix-blend-mode:screen;}
+    body:after{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center, transparent 38%, rgba(0,0,0,.58) 100%);}
+    .app{grid-template-columns:310px 1fr;position:relative;z-index:1;}
+    .sidebar{background:linear-gradient(180deg,rgba(255,75,31,.12),transparent 22%),linear-gradient(180deg,#101720,#070b10);border-right:1px solid rgba(255,75,31,.22);box-shadow:inset -1px 0 0 rgba(255,255,255,.05), 18px 0 60px rgba(0,0,0,.45);}
+    .brand-block{border-radius:8px;border:1px solid rgba(255,75,31,.46);background:linear-gradient(135deg,rgba(255,75,31,.18),rgba(255,255,255,.035) 46%,rgba(255,255,255,.015));box-shadow:0 0 32px rgba(255,75,31,.10), inset 0 1px 0 rgba(255,255,255,.10);}
+    .brand-block:before{content:"⚡";position:absolute;right:14px;top:12px;color:var(--brand);font-size:42px;text-shadow:0 0 18px rgba(255,75,31,.85);}
+    .brand-block:after{background:repeating-linear-gradient(45deg,rgba(255,75,31,.20) 0 5px,transparent 5px 13px);}
+    .brand-kicker,.nav-label,.crumb,.metric-label,label{letter-spacing:.16em;text-transform:uppercase;}
+    .brand-kicker{color:#fff}.brand-name{font-size:30px;letter-spacing:.035em;text-transform:uppercase}.tagline{color:#fff;letter-spacing:.11em;text-transform:uppercase}.powered{color:#b2bac1}
+    .nav{gap:8px}.nav button{border-radius:4px;border:1px solid rgba(255,255,255,.06);background:linear-gradient(90deg,rgba(255,255,255,.035),transparent);text-transform:uppercase;font-size:12px;letter-spacing:.055em;}
+    .nav button:hover{border-color:rgba(255,75,31,.36);background:rgba(255,75,31,.08)}
+    .nav button.active{color:#fff;background:linear-gradient(90deg,rgba(255,75,31,.36),rgba(255,75,31,.09));border-color:rgba(255,75,31,.72);box-shadow:inset 3px 0 0 var(--brand),0 0 26px rgba(255,75,31,.22);}
+    .icon{border-radius:3px;color:#fff;background:#0d151d;border:1px solid rgba(255,75,31,.42);box-shadow:0 0 12px rgba(255,75,31,.12)}
+    .topbar{background:linear-gradient(90deg,rgba(8,13,18,.94),rgba(13,21,28,.82));border-bottom:1px solid rgba(255,75,31,.18);box-shadow:0 14px 46px rgba(0,0,0,.36);}
+    .page-title{font-size:32px;text-transform:uppercase;letter-spacing:.08em}.crumb{color:#ff6a28}
+    .content{background:transparent}.module{animation:moduleIn .22s ease-out;}@keyframes moduleIn{from{opacity:.45;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .faultline-hero{position:relative;overflow:hidden;margin-bottom:18px;border:1px solid rgba(255,75,31,.24);border-radius:10px;background:linear-gradient(90deg,rgba(5,8,12,.82),rgba(13,20,27,.70)),radial-gradient(circle at 8% 40%,rgba(255,75,31,.34),transparent 28%);box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.08);min-height:188px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px;padding:26px;}
+    .faultline-hero:before{content:"";position:absolute;inset:0;opacity:.16;background:repeating-linear-gradient(170deg,transparent 0 22px,rgba(255,255,255,.12) 23px,transparent 25px);}
+    .hero-mark{font-size:74px;line-height:1;color:var(--brand);text-shadow:0 0 24px rgba(255,75,31,.75)}
+    .hero-title{font-size:48px;font-weight:950;line-height:.95;text-transform:uppercase;letter-spacing:.08em}.hero-title span{color:var(--brand)}
+    .hero-sub{margin-top:12px;color:#fff;letter-spacing:.22em;text-transform:uppercase;font-weight:800}.hero-mini{margin-top:16px;color:#9aa6b2;letter-spacing:.08em;text-transform:uppercase;font-size:12px}
+    .architecture{display:grid;gap:10px;align-self:center}.arch-card{display:flex;align-items:center;gap:14px;padding:14px;border-radius:7px;background:linear-gradient(135deg,rgba(18,28,38,.96),rgba(8,13,18,.8));border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+    .arch-card b{display:block;text-transform:uppercase;letter-spacing:.08em}.arch-card small{color:var(--muted)}.arch-icon{font-size:26px;color:var(--brand)}
+    .card,.metric,.result-box,.report-page{border-radius:8px;background:linear-gradient(180deg,rgba(18,27,37,.94),rgba(9,14,20,.94));border:1px solid rgba(255,255,255,.09);box-shadow:0 16px 50px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.07)}
+    .card-header{border-bottom:1px solid rgba(255,75,31,.16);background:linear-gradient(90deg,rgba(255,75,31,.08),transparent)}
+    .card-title{letter-spacing:.1em;text-transform:uppercase}.card-sub{color:#8e9aa5}.metric{position:relative;overflow:hidden}.metric:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brand);box-shadow:0 0 18px var(--brand)}
+    .metric-value{color:#fff;text-shadow:0 0 12px rgba(255,255,255,.12)}.metric-foot{color:#7a8792}
+    input,select,textarea{border-radius:4px;background:#070c11;border:1px solid rgba(255,255,255,.12);color:#fff;box-shadow:inset 0 1px 14px rgba(0,0,0,.45)}
+    input:focus,select:focus,textarea:focus{border-color:rgba(255,75,31,.72);box-shadow:0 0 0 3px rgba(255,75,31,.12), inset 0 1px 14px rgba(0,0,0,.45)}
+    .btn{border-radius:4px;text-transform:uppercase;letter-spacing:.08em;background:#0b1118;border-color:rgba(255,255,255,.13)}.btn.primary{background:linear-gradient(135deg,#ff3e16,#ff6a28);color:#fff;box-shadow:0 0 22px rgba(255,75,31,.25)}.btn.danger{color:#fff;border-color:rgba(255,75,31,.46);background:rgba(255,75,31,.10)}
+    .status-pill{border-radius:3px;background:#080d12;border-color:rgba(255,255,255,.1);text-transform:uppercase;letter-spacing:.09em}.dot{background:var(--brand);box-shadow:0 0 10px var(--brand)}
+    .tabs button.active{background:rgba(255,75,31,.18);border-color:rgba(255,75,31,.56);color:#fff}.check-item{border-radius:5px;background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.07)}
+    .sidebar-footer{border-radius:6px;border-color:rgba(255,75,31,.18);background:rgba(255,75,31,.055)}
+  </style>
+
+  <style id="report-color-fix">
+    /* FaultLine report preview: dark, readable, print-safe */
+    #report .report-page{
+      background:
+        linear-gradient(180deg, rgba(15,24,33,.98), rgba(7,12,18,.98)) !important;
+      color:#f6f7f8 !important;
+      border:1px solid rgba(255,75,31,.24) !important;
+      box-shadow:0 18px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08) !important;
+      font-family:var(--font) !important;
+    }
+    #report .report-page h2,
+    #report .report-page h3{
+      color:#fff !important;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-top:0;
+    }
+    #report .report-page h2{
+      font-size:26px;
+      padding-left:14px;
+      border-left:4px solid var(--brand);
+      text-shadow:0 0 18px rgba(255,75,31,.18);
+    }
+    #report .report-page h3{font-size:15px;margin:20px 0 8px;color:#ff6a28 !important;}
+    #report .report-page p{color:#b9c4cc !important;line-height:1.55;}
+    #report .report-page .muted{color:#91a0aa !important;}
+    #report .report-page .line{
+      height:1px !important;
+      background:linear-gradient(90deg, rgba(255,75,31,.65), rgba(255,255,255,.16), transparent) !important;
+      margin:20px 0 !important;
+    }
+    #report .report-page table{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+    }
+    #report .report-page table th{
+      color:#ff6a28 !important;
+      background:rgba(255,75,31,.08) !important;
+      border-color:rgba(255,255,255,.10) !important;
+      font-size:11px;
+      letter-spacing:.14em;
+    }
+    #report .report-page table td{
+      color:#e9eef2 !important;
+      background:rgba(255,255,255,.025) !important;
+      border-color:rgba(255,255,255,.10) !important;
+    }
+    #report .report-page pre{
+      background:#080d12 !important;
+      color:#e9eef2 !important;
+      border:1px solid rgba(255,75,31,.22) !important;
+      border-left:4px solid var(--brand) !important;
+      border-radius:6px !important;
+      box-shadow:inset 0 1px 14px rgba(0,0,0,.42);
+    }
+    @media print{
+      #report .report-page{background:white !important;color:#182129 !important;border:0 !important;box-shadow:none !important;}
+      #report .report-page h2,#report .report-page h3{color:#182129 !important;text-shadow:none;}
+      #report .report-page h2{border-left:4px solid #ff4b1f;}
+      #report .report-page p,#report .report-page .muted{color:#34424d !important;}
+      #report .report-page .line{background:#cbd3d8 !important;}
+      #report .report-page table{border:1px solid #d5dce1;background:white;}
+      #report .report-page table th{color:#182129 !important;background:#eef1f3 !important;border-color:#d5dce1 !important;}
+      #report .report-page table td{color:#182129 !important;background:white !important;border-color:#d5dce1 !important;}
+      #report .report-page pre{background:#f3f5f6 !important;color:#182129 !important;border:1px solid #d5dce1 !important;border-left:4px solid #ff4b1f !important;box-shadow:none;}
+    }
+  </style>
+
 </head>
-
 <body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <div class="brand-kicker">Powered by FaultLine Energy</div>
+        <div class="brand-name">Field Logic IQ</div>
+        <div class="powered">Industrial diagnostic command center</div>
+        <div class="tagline">Find the Fault. Fix the System.</div>
+      </div>
+      <div class="nav-label">Modules</div>
+      <nav class="nav" aria-label="Primary modules">
+        <button class="nav-btn active" data-module="dashboard"><span class="icon">▦</span> Dashboard</button>
+        <button class="nav-btn" data-module="ai"><span class="icon">AI</span> AI Assist</button>
+        <button class="nav-btn" data-module="loop"><span class="icon">mA</span> 4-20mA Loop Diagnostic</button>
+        <button class="nav-btn" data-module="valve"><span class="icon">V</span> Valve Diagnostic</button>
+        <button class="nav-btn" data-module="calc"><span class="icon">ƒ</span> Calculator Suite</button>
+        <button class="nav-btn" data-module="radio"><span class="icon">RF</span> Telemetry / Radio</button>
+        <button class="nav-btn" data-module="case"><span class="icon">CL</span> Case Log</button>
+        <button class="nav-btn" data-module="report"><span class="icon">RP</span> Report Generator</button>
+        <button class="nav-btn" data-module="kb"><span class="icon">KB</span> Knowledge Base</button>
+      </nav>
+      <div class="sidebar-footer">
+        <strong>Pro Tool Build</strong><br />
+        Local-only diagnostics. No external libraries. No fabricated readings. Metrics populate only from entered cases and tool outputs.
+      </div>
+    </aside>
 
-<div class="app">
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="crumb">Field Logic IQ / <span id="currentModule">Dashboard</span></div>
+          <div class="page-title" id="pageTitle">Dashboard</div>
+        </div>
+        <div class="top-actions no-print">
+          <button class="btn" id="newCaseBtn">New Case</button>
+          <button class="btn primary" id="saveCaseBtn">Save Current Case</button>
+          <button class="btn danger" id="clearBtn">Clear Local Data</button>
+        </div>
+      </header>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="logo">
-      FIELD LOGIC<br>
-      <span>IQ</span>
-    </div>
+      <section class="content">
+        <section id="dashboard" class="module active">
+          <div class="faultline-hero">
+            <div style="position:relative;z-index:1;display:flex;gap:18px;align-items:center;">
+              <div class="hero-mark">⚡</div>
+              <div>
+                <div class="hero-title">Field Logic <span>IQ</span></div>
+                <div class="hero-sub">Find the Fault. Fix the System.</div>
+                <div class="hero-mini">AI Assist → 4-20mA Loop → Valve → Calculators → Telemetry / Radio</div>
+              </div>
+            </div>
+            <div class="architecture" style="position:relative;z-index:1;">
+              <div class="arch-card"><span class="arch-icon">AI</span><div><b>Logic Assist</b><small>Field triage, probable causes, next checks</small></div></div>
+              <div class="arch-card"><span class="arch-icon">mA</span><div><b>LoopStrike</b><small>4-20mA scaling, power, and loop fault isolation</small></div></div>
+              <div class="arch-card"><span class="arch-icon">RF</span><div><b>SignalCore</b><small>Telemetry margin, antenna, and radio path diagnostics</small></div></div>
+            </div>
+          </div>
+          <div class="grid four">
+            <div class="metric"><div class="metric-label">Open Cases</div><div class="metric-value" id="metricOpen">—</div><div class="metric-foot">No case data loaded</div></div>
+            <div class="metric"><div class="metric-label">Last Diagnostic</div><div class="metric-value" id="metricDiag">—</div><div class="metric-foot">Awaiting tool run</div></div>
+            <div class="metric"><div class="metric-label">Report Status</div><div class="metric-value" id="metricReport">—</div><div class="metric-foot">No report generated</div></div>
+            <div class="metric"><div class="metric-label">Risk Flag</div><div class="metric-value" id="metricRisk">—</div><div class="metric-foot">No active finding</div></div>
+          </div>
+          <div class="grid two" style="margin-top:18px;">
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Current Case Overview</div><div class="card-sub">Case/report-ready field capture</div></div><span class="status-pill"><span class="dot"></span> Empty</span></div>
+              <div class="card-body">
+                <div class="field-row three">
+                  <div><label>Case ID</label><input id="caseId" placeholder="FLIQ-YYYYMMDD-001" /></div>
+                  <div><label>Site / Asset</label><input id="siteAsset" placeholder="Station, pad, skid, RTU, valve tag" /></div>
+                  <div><label>Technician</label><input id="techName" placeholder="Name or crew" /></div>
+                </div>
+                <div class="field-row three">
+                  <div><label>Priority</label><select id="priority"><option value="">Select</option><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></div>
+                  <div><label>System</label><select id="systemType"><option value="">Select</option><option>Instrumentation</option><option>Valve / Pneumatic</option><option>Telemetry / Radio</option><option>Electrical</option><option>Controls</option></select></div>
+                  <div><label>Status</label><select id="caseStatus"><option>Open</option><option>Monitoring</option><option>Resolved</option><option>Escalated</option></select></div>
+                </div>
+                <label>Problem Statement</label><textarea id="problem" placeholder="Capture symptom, operating state, alarm text, recent work, weather, and safety conditions."></textarea>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Priority Workflow</div><div class="card-sub">Fast path by brand priority</div></div></div>
+              <div class="card-body checklist">
+                <div class="check-item"><input type="checkbox" /> <span>Start with <strong>AI Assist</strong> to structure symptoms and next measurements.</span></div>
+                <div class="check-item"><input type="checkbox" /> <span>Run <strong>4-20mA Loop Diagnostic</strong> for current-loop faults and scaling mismatches.</span></div>
+                <div class="check-item"><input type="checkbox" /> <span>Use <strong>Valve Diagnostic</strong> for positioner, actuator, air supply, and mechanical binding checks.</span></div>
+                <div class="check-item"><input type="checkbox" /> <span>Use <strong>Calculator Suite</strong> to document conversions, percent span, Ohm’s law, and pneumatic checks.</span></div>
+                <div class="check-item"><input type="checkbox" /> <span>Use <strong>Telemetry / Radio</strong> for RSSI, antenna, path, power, and polling issues.</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-    <div class="powered">Powered by FaultLine Energy</div>
+        <section id="ai" class="module">
+          <div class="grid two">
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">AI Assist Triage</div><div class="card-sub">Rule-based local assistant for field logic and report language</div></div></div>
+              <div class="card-body">
+                <div class="field-row two">
+                  <div><label>Primary Symptom</label><select id="aiSymptom"><option value="">Select</option><option>No signal</option><option>Reading stuck</option><option>Reading erratic</option><option>Valve not moving</option><option>Slow valve response</option><option>Telemetry loss</option><option>Intermittent comms</option><option>Scaling mismatch</option></select></div>
+                  <div><label>Observed Area</label><select id="aiArea"><option value="">Select</option><option>Transmitter</option><option>PLC / RTU</option><option>Power supply</option><option>Valve / actuator</option><option>Radio / antenna</option><option>Wiring / junction box</option></select></div>
+                </div>
+                <label>Field Notes</label><textarea id="aiNotes" placeholder="Example: LT-201 reads 0% at HMI, meter shows 3.7 mA at AI card, 24VDC present at power supply."></textarea>
+                <button class="btn primary" onclick="runAI()">Generate Diagnostic Path</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">AI Assist Output</div><div class="card-sub">Structured next steps and probable causes</div></div><span id="aiStatus" class="status-pill"><span class="dot"></span> Not run</span></div>
+              <div class="card-body"><div class="result-box" id="aiOutput">No AI Assist output yet.</div></div>
+            </div>
+          </div>
+        </section>
 
-    <div class="nav">
-      <button onclick="showHome()">Dashboard</button>
-      <button onclick="showAI()">AI Assist</button>
-      <button onclick="showTroubleshoot()">Troubleshooting</button>
-      <button onclick="showCalculator()">Calculators</button>
-      <button onclick="showLoop()">4-20mA Loop</button>
-    </div>
-  </aside>
+        <section id="loop" class="module">
+          <div class="grid two">
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">4-20mA Loop Diagnostic</div><div class="card-sub">Current, scaling, supply, and load validation</div></div></div>
+              <div class="card-body">
+                <div class="field-row four">
+                  <div><label>Measured mA</label><input id="maMeasured" type="number" step="0.001" placeholder="e.g. 12.000" /></div>
+                  <div><label>LRV</label><input id="lrv" type="number" step="0.001" placeholder="0" /></div>
+                  <div><label>URV</label><input id="urv" type="number" step="0.001" placeholder="100" /></div>
+                  <div><label>Process Value</label><input id="processValue" type="number" step="0.001" placeholder="Optional" /></div>
+                </div>
+                <div class="field-row four">
+                  <div><label>Supply VDC</label><input id="supplyV" type="number" step="0.01" placeholder="24" /></div>
+                  <div><label>Total Load Ω</label><input id="loadOhms" type="number" step="0.1" placeholder="250" /></div>
+                  <div><label>AI Drop V</label><input id="aiDrop" type="number" step="0.01" placeholder="Optional" /></div>
+                  <div><label>Mode</label><select id="loopMode"><option>2-wire transmitter</option><option>4-wire transmitter</option><option>Simulator injection</option><option>PLC output</option></select></div>
+                </div>
+                <button class="btn primary" onclick="runLoop()">Analyze Loop</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Loop Findings</div><div class="card-sub">Percent span, expected PV, and probable fault class</div></div><span id="loopStatus" class="status-pill"><span class="dot"></span> Not run</span></div>
+              <div class="card-body"><div class="result-box" id="loopOutput">No loop diagnostic output yet.</div></div>
+            </div>
+          </div>
+        </section>
 
-  <!-- MAIN -->
-  <main class="main">
+        <section id="valve" class="module">
+          <div class="grid two">
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Valve Diagnostic</div><div class="card-sub">Command, feedback, air, I/P, actuator, and mechanical checks</div></div></div>
+              <div class="card-body">
+                <div class="field-row three">
+                  <div><label>Command %</label><input id="valveCmd" type="number" step="0.1" /></div>
+                  <div><label>Feedback %</label><input id="valveFb" type="number" step="0.1" /></div>
+                  <div><label>Supply Air PSI</label><input id="airPsi" type="number" step="0.1" /></div>
+                </div>
+                <div class="field-row three">
+                  <div><label>Bench Range</label><select id="benchRange"><option>3-15 PSI</option><option>6-30 PSI</option><option>Digital positioner</option><option>Other</option></select></div>
+                  <div><label>Failure Action</label><select id="failAction"><option>Fail closed</option><option>Fail open</option><option>Fail last</option><option>Unknown</option></select></div>
+                  <div><label>Symptom</label><select id="valveSymptom"><option>Not moving</option><option>Hunting</option><option>Slow response</option><option>Position mismatch</option><option>Air leak</option><option>Stiction suspected</option></select></div>
+                </div>
+                <label>Observations</label><textarea id="valveNotes" placeholder="Include air leaks, positioner display, handwheel state, linkage movement, bypass/ESD state, and recent maintenance."></textarea>
+                <button class="btn primary" onclick="runValve()">Analyze Valve</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Valve Findings</div><div class="card-sub">Mismatch, likely cause, and field checks</div></div><span id="valveStatus" class="status-pill"><span class="dot"></span> Not run</span></div>
+              <div class="card-body"><div class="result-box" id="valveOutput">No valve diagnostic output yet.</div></div>
+            </div>
+          </div>
+        </section>
 
-    <div class="hero">
-      <h1>Field Intelligence Console</h1>
-      <p>Find the Fault. Fix the Flow.</p>
-    </div>
+        <section id="calc" class="module">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Calculator Suite</div><div class="card-sub">Loop scaling, Ohm’s law, pressure conversion, radio path helpers</div></div></div>
+            <div class="card-body">
+              <div class="tabs">
+                <button class="tab-btn active" data-tab="calc-scale">4-20 Scaling</button>
+                <button class="tab-btn" data-tab="calc-ohm">Ohm’s Law</button>
+                <button class="tab-btn" data-tab="calc-pressure">Pressure</button>
+                <button class="tab-btn" data-tab="calc-radio">Radio Path</button>
+              </div>
+              <div id="calc-scale" class="tab-panel active">
+                <div class="field-row four"><div><label>mA</label><input id="calcMa" type="number" step="0.001"></div><div><label>LRV</label><input id="calcLrv" type="number" step="0.001"></div><div><label>URV</label><input id="calcUrv" type="number" step="0.001"></div><div><label>&nbsp;</label><button class="btn primary" onclick="calcScale()">Calculate</button></div></div>
+                <div class="result-box" id="scaleOut">No calculation yet.</div>
+              </div>
+              <div id="calc-ohm" class="tab-panel">
+                <div class="field-row four"><div><label>Voltage</label><input id="ohmV" type="number" step="0.001"></div><div><label>Current mA</label><input id="ohmMa" type="number" step="0.001"></div><div><label>Resistance Ω</label><input id="ohmR" type="number" step="0.001"></div><div><label>&nbsp;</label><button class="btn primary" onclick="calcOhm()">Solve Missing</button></div></div>
+                <div class="result-box" id="ohmOut">Enter any two values.</div>
+              </div>
+              <div id="calc-pressure" class="tab-panel">
+                <div class="field-row four"><div><label>PSI</label><input id="psi" type="number" step="0.001"></div><div><label>kPa</label><input id="kpa" type="number" step="0.001"></div><div><label>bar</label><input id="bar" type="number" step="0.001"></div><div><label>&nbsp;</label><button class="btn primary" onclick="calcPressure()">Convert</button></div></div>
+                <div class="result-box" id="pressureOut">Enter one pressure value.</div>
+              </div>
+              <div id="calc-radio" class="tab-panel">
+                <div class="field-row four"><div><label>Frequency MHz</label><input id="freqMhz" type="number" step="0.001"></div><div><label>Distance miles</label><input id="distanceMi" type="number" step="0.001"></div><div><label>Tx Power dBm</label><input id="txDbm" type="number" step="0.1"></div><div><label>&nbsp;</label><button class="btn primary" onclick="calcRadio()">Estimate</button></div></div>
+                <div class="result-box" id="radioCalcOut">No radio estimate yet.</div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-    <!-- CLEARED METRICS -->
-    <section class="metrics">
-      <div class="card"><div class="metric orange">--</div>Active Cases</div>
-      <div class="card"><div class="metric orange">--</div>Critical Alerts</div>
-      <div class="card"><div class="metric blue">--</div>Resolved Today</div>
-      <div class="card"><div class="metric green">--</div>System Health</div>
-    </section>
+        <section id="radio" class="module">
+          <div class="grid two">
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Telemetry / Radio Diagnostic</div><div class="card-sub">RSSI, noise, power, antenna, polling, and path checks</div></div></div>
+              <div class="card-body">
+                <div class="field-row three">
+                  <div><label>RSSI dBm</label><input id="rssi" type="number" step="0.1"></div>
+                  <div><label>Noise Floor dBm</label><input id="noise" type="number" step="0.1"></div>
+                  <div><label>Retries / Timeouts</label><input id="retries" type="number" step="1"></div>
+                </div>
+                <div class="field-row three">
+                  <div><label>Supply VDC</label><input id="radioV" type="number" step="0.01"></div>
+                  <div><label>Antenna / Feedline</label><select id="antenna"><option>Unknown</option><option>Verified</option><option>Suspect</option><option>Damaged</option><option>Water ingress suspected</option></select></div>
+                  <div><label>Symptom</label><select id="radioSymptom"><option>Offline</option><option>Intermittent</option><option>High latency</option><option>Low throughput</option><option>Polling errors</option></select></div>
+                </div>
+                <button class="btn primary" onclick="runRadioDiag()">Analyze Telemetry</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Telemetry Findings</div><div class="card-sub">Signal margin and likely fault class</div></div><span id="radioStatus" class="status-pill"><span class="dot"></span> Not run</span></div>
+              <div class="card-body"><div class="result-box" id="radioOutput">No telemetry diagnostic output yet.</div></div>
+            </div>
+          </div>
+        </section>
 
-    <div id="content"></div>
+        <section id="case" class="module">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Case Log</div><div class="card-sub">Local browser case records</div></div><button class="btn small" onclick="renderCases()">Refresh</button></div>
+            <div class="card-body"><div id="caseLog"></div></div>
+          </div>
+        </section>
 
-  </main>
-</div>
+        <section id="report" class="module">
+          <div class="card">
+            <div class="card-header no-print"><div><div class="card-title">Report Generator</div><div class="card-sub">Printable field service report</div></div><div><button class="btn" onclick="generateReport()">Generate Preview</button> <button class="btn primary" onclick="window.print()">Print / Save PDF</button></div></div>
+            <div class="card-body"><div id="reportPage" class="report-page"><h2>Field Logic IQ Report</h2><p class="muted">Generate a report preview after entering case and diagnostic data.</p></div></div>
+          </div>
+        </section>
 
-<script>
+        <section id="kb" class="module">
+          <div class="grid two">
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Knowledge Base</div><div class="card-sub">Field references and diagnostic rules of thumb</div></div></div>
+              <div class="card-body kb-list">
+                <div class="kb-item"><strong>4-20mA quick read</strong><p>4 mA = 0% span, 20 mA = 100% span, 12 mA = 50% span. Values below 3.8 mA or above 20.5 mA commonly indicate underrange/overrange or fault signaling depending on device configuration.</p></div>
+                <div class="kb-item"><strong>Loop load check</strong><p>Verify supply voltage can drive transmitter, wiring, input resistor, barriers, and accessories. Excessive load can pull the loop low under operating conditions.</p></div>
+                <div class="kb-item"><strong>Valve mismatch</strong><p>Compare command against feedback before assuming the valve is stuck. Validate air supply, I/P output, positioner mode, travel calibration, linkage, handwheel, ESD state, and mechanical obstruction.</p></div>
+                <div class="kb-item"><strong>Telemetry triage</strong><p>Confirm DC power first, then antenna/feedline, RSSI/noise margin, path obstruction, polling settings, baud/radio config, grounding, and nearby interference sources.</p></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Report Language Blocks</div><div class="card-sub">Copy-ready wording</div></div></div>
+              <div class="card-body"><div class="result-box">Finding: Diagnostic checks indicate the fault is most likely isolated to [component/subsystem].
 
-const content = document.getElementById("content");
+Action Taken: Verified field signal, power, wiring integrity, configuration, and observed operating response.
 
-/* HOME */
-function showHome() {
-  content.innerHTML = "<div class='card'>Select a tool from the sidebar.</div>";
-}
+Recommendation: Correct identified deficiency, retest across operating range, and monitor for repeat alarms before closing case.</div></div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
 
-/* AI */
-function showAI() {
-  content.innerHTML = `
-    <div class="card">
-      <h2>AI Assist</h2>
-      <input id="q" placeholder="Ask a field question"/>
-      <button class="primary" onclick="runAI()">Run</button>
-      <div id="aiRes" class="result"></div>
-    </div>
-  `;
-}
+  <script>
+    'use strict';
 
-function runAI() {
-  const q = document.getElementById("q").value.toLowerCase();
-  const r = document.getElementById("aiRes");
+    const state = {
+      lastDiagnostic: '',
+      lastRisk: '',
+      lastOutputs: {},
+      cases: []
+    };
 
-  if (q.includes("valve")) {
-    r.innerHTML = "Check air, positioner, and stiction.";
-  } else if (q.includes("loop")) {
-    r.innerHTML = "Check power, wiring, and signal.";
-  } else {
-    r.innerHTML = "Check power, signal, and configuration.";
-  }
-}
+    const qs = id => document.getElementById(id);
+    const val = id => (qs(id) && qs(id).value || '').trim();
+    const num = id => {
+      const raw = val(id);
+      if (raw === '') return null;
+      const n = Number(raw);
+      return Number.isFinite(n) ? n : null;
+    };
+    const fmt = n => Number.isFinite(n) ? (Math.round(n * 1000) / 1000).toString() : '—';
 
-/* TROUBLESHOOT */
-function showTroubleshoot() {
-  content.innerHTML = `
-    <div class="card">
-      <h2>Troubleshooting</h2>
-      <select id="fault">
-        <option value="valve">Valve Issue</option>
-        <option value="loop">Loop Issue</option>
-      </select>
-      <button class="primary" onclick="runTS()">Run</button>
-      <div id="tsRes" class="result"></div>
-    </div>
-  `;
-}
+    function setStatus(id, label, type) {
+      const el = qs(id);
+      if (!el) return;
+      el.innerHTML = '<span class="dot ' + (type || '') + '"></span> ' + label;
+    }
 
-function runTS() {
-  const f = document.getElementById("fault").value;
-  const r = document.getElementById("tsRes");
+    function setDiagnostic(name, risk) {
+      state.lastDiagnostic = name;
+      state.lastRisk = risk || '';
+      qs('metricDiag').textContent = name || '—';
+      qs('metricRisk').textContent = risk || '—';
+      updateMetrics();
+    }
 
-  if (f === "valve") {
-    r.innerHTML = "Check actuator, air, and tuning.";
-  } else {
-    r.innerHTML = "Check power supply and wiring.";
-  }
-}
+    function updateMetrics() {
+      const open = state.cases.filter(c => c.status !== 'Resolved').length;
+      qs('metricOpen').textContent = state.cases.length ? String(open) : '—';
+      qs('metricReport').textContent = qs('reportPage').dataset.generated === 'true' ? 'Ready' : '—';
+    }
 
-/* CALCULATOR */
-function showCalculator() {
-  content.innerHTML = `
-    <div class="card">
-      <h2>Calculator</h2>
-      <input id="ma" placeholder="mA"/>
-      <button class="primary" onclick="calc()">Convert to %</button>
-      <div id="calcRes" class="result"></div>
-    </div>
-  `;
-}
+    function moduleTitle(id) {
+      const map = { dashboard:'Dashboard', ai:'AI Assist', loop:'4-20mA Loop Diagnostic', valve:'Valve Diagnostic', calc:'Calculator Suite', radio:'Telemetry / Radio', case:'Case Log', report:'Report Generator', kb:'Knowledge Base' };
+      return map[id] || 'Dashboard';
+    }
 
-function calc() {
-  const ma = Number(document.getElementById("ma").value);
-  document.getElementById("calcRes").innerHTML =
-    ((ma - 4) / 16 * 100).toFixed(2) + "%";
-}
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.module;
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+        btn.classList.add('active');
+        qs(id).classList.add('active');
+        qs('currentModule').textContent = moduleTitle(id);
+        qs('pageTitle').textContent = moduleTitle(id);
+        if (id === 'case') renderCases();
+        if (id === 'report') generateReport();
+      });
+    });
 
-/* LOOP */
-function showLoop() {
-  content.innerHTML = `
-    <div class="card">
-      <h2>Loop Diagnostic</h2>
-      <input id="loop" placeholder="mA"/>
-      <button class="primary" onclick="runLoop()">Run</button>
-      <div id="loopRes" class="result"></div>
-    </div>
-  `;
-}
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        qs(btn.dataset.tab).classList.add('active');
+      });
+    });
 
-function runLoop() {
-  const ma = Number(document.getElementById("loop").value);
-  const r = document.getElementById("loopRes");
+    function runAI() {
+      const symptom = val('aiSymptom');
+      const area = val('aiArea');
+      const notes = val('aiNotes');
+      if (!symptom && !area && !notes) {
+        qs('aiOutput').textContent = 'Enter a symptom, area, or field note to generate a diagnostic path.';
+        setStatus('aiStatus', 'Input needed', 'warn');
+        return;
+      }
+      const steps = [];
+      let risk = 'Review';
+      steps.push('AI ASSIST TRIAGE');
+      steps.push('Symptom: ' + (symptom || 'Not specified'));
+      steps.push('Area: ' + (area || 'Not specified'));
+      steps.push('');
+      if (/telemetry|radio|comms|intermittent/i.test(symptom + ' ' + area + ' ' + notes)) {
+        steps.push('Probable path: verify DC power, antenna/feedline, RSSI/noise margin, polling configuration, and obstruction/interference sources.');
+        risk = 'Comms';
+      } else if (/valve|actuator|position|moving|response/i.test(symptom + ' ' + area + ' ' + notes)) {
+        steps.push('Probable path: compare command vs feedback, verify air supply, positioner mode, I/P output, linkage, handwheel, ESD/bypass state, and mechanical travel.');
+        risk = 'Mechanical';
+      } else if (/signal|ma|loop|transmitter|scaling|stuck|erratic/i.test(symptom + ' ' + area + ' ' + notes)) {
+        steps.push('Probable path: measure loop current at field device and AI card, confirm 24VDC supply, validate scaling LRV/URV, check load, shield/ground, and wet junctions.');
+        risk = 'Instrumentation';
+      } else {
+        steps.push('Probable path: isolate by power, signal, configuration, mechanical state, and environmental conditions. Document each measurement before changing settings.');
+      }
+      steps.push('');
+      steps.push('Next measurements:');
+      steps.push('1. Source voltage and loaded voltage.');
+      steps.push('2. Field signal at device and controller input.');
+      steps.push('3. Configuration / range / mode check.');
+      steps.push('4. Physical condition check: terminals, water ingress, corrosion, tubing, antenna, linkage, or obstruction.');
+      steps.push('');
+      steps.push('Report wording: Initial triage indicates the issue should be isolated by verifying field measurement, power integrity, configuration, and physical condition before component replacement.');
+      qs('aiOutput').textContent = steps.join('\n');
+      state.lastOutputs.ai = qs('aiOutput').textContent;
+      setStatus('aiStatus', 'Generated', 'ok');
+      setDiagnostic('AI Assist', risk);
+    }
 
-  if (ma < 3.8) r.innerHTML = "Under-range fault";
-  else if (ma <= 20.5) r.innerHTML = "Normal";
-  else r.innerHTML = "Over-range";
-}
+    function runLoop() {
+      const ma = num('maMeasured'), lrv = num('lrv'), urv = num('urv'), pv = num('processValue'), supply = num('supplyV'), load = num('loadOhms');
+      if (ma === null) { qs('loopOutput').textContent = 'Measured mA is required.'; setStatus('loopStatus','Input needed','warn'); return; }
+      const out = ['4-20mA LOOP DIAGNOSTIC'];
+      let risk = 'Normal';
+      const pct = ((ma - 4) / 16) * 100;
+      out.push('Measured current: ' + fmt(ma) + ' mA');
+      out.push('Percent span: ' + fmt(pct) + '%');
+      if (lrv !== null && urv !== null && urv !== lrv) out.push('Expected scaled PV: ' + fmt(lrv + (pct / 100) * (urv - lrv)));
+      if (pv !== null && lrv !== null && urv !== null && urv !== lrv) out.push('PV deviation from current-based value: ' + fmt(pv - (lrv + (pct / 100) * (urv - lrv))));
+      if (ma < 3.6) { out.push('Fault class: underrange / open circuit / failed transmitter / no loop power.'); risk = 'High'; }
+      else if (ma < 3.9) { out.push('Fault class: low underrange. Check sensor underrange or fault alarm configuration.'); risk = 'Medium'; }
+      else if (ma > 21) { out.push('Fault class: overrange / fault high / configuration mismatch.'); risk = 'High'; }
+      else if (ma > 20.5) { out.push('Fault class: high overrange. Check process overrange or sensor alarm config.'); risk = 'Medium'; }
+      else { out.push('Fault class: current is inside nominal 4-20mA range. Continue with scaling and controller input verification.'); }
+      if (supply !== null && load !== null) {
+        const drop = (ma / 1000) * load;
+        out.push('Calculated load drop: ' + fmt(drop) + ' V across ' + fmt(load) + ' Ω.');
+        out.push('Remaining headroom estimate: ' + fmt(supply - drop) + ' V before transmitter/barrier requirements.');
+        if (supply - drop < 10) { out.push('Warning: limited headroom. Excessive load or low supply may cause loop collapse.'); risk = 'High'; }
+      }
+      out.push('Recommended checks: measure at transmitter, junction, barrier/isolator, and AI card; verify shield/ground, wet terminals, range, and controller scaling.');
+      qs('loopOutput').textContent = out.join('\n');
+      state.lastOutputs.loop = qs('loopOutput').textContent;
+      setStatus('loopStatus', 'Analyzed', risk === 'High' ? 'bad' : risk === 'Medium' ? 'warn' : 'ok');
+      setDiagnostic('4-20mA Loop', risk);
+    }
 
-showHome();
+    function runValve() {
+      const cmd = num('valveCmd'), fb = num('valveFb'), air = num('airPsi');
+      const symptom = val('valveSymptom');
+      const out = ['VALVE DIAGNOSTIC'];
+      let risk = 'Review';
+      if (cmd !== null && fb !== null) {
+        const diff = Math.abs(cmd - fb);
+        out.push('Command / feedback mismatch: ' + fmt(diff) + '%');
+        if (diff > 10) { out.push('Finding: significant position mismatch. Prioritize positioner, actuator air, linkage, calibration, and mechanical travel checks.'); risk = 'High'; }
+        else { out.push('Finding: command and feedback are reasonably aligned. Investigate tuning, process conditions, or intermittent behavior.'); risk = 'Low'; }
+      } else out.push('Command and feedback are needed for mismatch calculation.');
+      if (air !== null) {
+        out.push('Supply air: ' + fmt(air) + ' PSI');
+        if (air < 20) { out.push('Warning: supply air appears low for many actuators/positioners. Verify regulator, filter, leaks, and header pressure.'); risk = 'High'; }
+      }
+      out.push('Symptom: ' + symptom);
+      if (/Hunting/i.test(symptom)) out.push('Likely checks: positioner tuning, sticky packing, oversupply/undersupply air, bad feedback linkage, unstable process.');
+      if (/Slow/i.test(symptom)) out.push('Likely checks: plugged filter, restricted tubing, actuator leak, volume booster, packing friction, positioner output.');
+      if (/Not moving/i.test(symptom)) out.push('Likely checks: air isolation, solenoid/ESD state, handwheel, failed I/P, seized stem, disconnected linkage.');
+      out.push('Recommended field sequence: verify safe state, confirm command, verify air, test positioner output, inspect linkage/stem movement, stroke test when authorized.');
+      qs('valveOutput').textContent = out.join('\n');
+      state.lastOutputs.valve = qs('valveOutput').textContent;
+      setStatus('valveStatus', 'Analyzed', risk === 'High' ? 'bad' : 'ok');
+      setDiagnostic('Valve Diagnostic', risk);
+    }
 
-</script>
+    function calcScale() {
+      const ma = num('calcMa'), l = num('calcLrv'), u = num('calcUrv');
+      if (ma === null || l === null || u === null || u === l) { qs('scaleOut').textContent = 'Enter mA, LRV, and URV. URV must differ from LRV.'; return; }
+      const pct = ((ma - 4) / 16) * 100;
+      const pv = l + (pct / 100) * (u - l);
+      qs('scaleOut').textContent = 'Percent span: ' + fmt(pct) + '%\nScaled value: ' + fmt(pv);
+      state.lastOutputs.calc = qs('scaleOut').textContent;
+      setDiagnostic('Calculator Suite', 'Calculated');
+    }
 
+    function calcOhm() {
+      const v = num('ohmV'), ma = num('ohmMa'), r = num('ohmR');
+      let out = 'Enter exactly two values to solve the third.';
+      if (v !== null && ma !== null && r === null && ma !== 0) out = 'Resistance: ' + fmt(v / (ma / 1000)) + ' Ω';
+      if (v !== null && r !== null && ma === null && r !== 0) out = 'Current: ' + fmt((v / r) * 1000) + ' mA';
+      if (ma !== null && r !== null && v === null) out = 'Voltage: ' + fmt((ma / 1000) * r) + ' V';
+      qs('ohmOut').textContent = out;
+      state.lastOutputs.calc = out;
+      setDiagnostic('Calculator Suite', 'Calculated');
+    }
+
+    function calcPressure() {
+      let psi = num('psi'), kpa = num('kpa'), bar = num('bar');
+      if (psi === null && kpa === null && bar === null) { qs('pressureOut').textContent = 'Enter one pressure value.'; return; }
+      if (psi === null) psi = kpa !== null ? kpa / 6.894757 : bar * 14.503774;
+      qs('pressureOut').textContent = 'PSI: ' + fmt(psi) + '\nkPa: ' + fmt(psi * 6.894757) + '\nbar: ' + fmt(psi / 14.503774);
+      state.lastOutputs.calc = qs('pressureOut').textContent;
+      setDiagnostic('Calculator Suite', 'Calculated');
+    }
+
+    function calcRadio() {
+      const f = num('freqMhz'), d = num('distanceMi'), tx = num('txDbm');
+      if (f === null || d === null || tx === null || f <= 0 || d <= 0) { qs('radioCalcOut').textContent = 'Enter frequency MHz, distance miles, and Tx power dBm.'; return; }
+      const km = d * 1.609344;
+      const fspl = 32.44 + 20 * Math.log10(km) + 20 * Math.log10(f);
+      qs('radioCalcOut').textContent = 'Free-space path loss estimate: ' + fmt(fspl) + ' dB\nReceived power before antenna/cable gains/losses: ' + fmt(tx - fspl) + ' dBm';
+      state.lastOutputs.calc = qs('radioCalcOut').textContent;
+      setDiagnostic('Calculator Suite', 'Calculated');
+    }
+
+    function runRadioDiag() {
+      const rssi = num('rssi'), noise = num('noise'), retries = num('retries'), v = num('radioV');
+      const out = ['TELEMETRY / RADIO DIAGNOSTIC'];
+      let risk = 'Review';
+      if (rssi !== null) {
+        out.push('RSSI: ' + fmt(rssi) + ' dBm');
+        if (rssi < -100) { out.push('Weak signal. Check antenna alignment, coax, obstruction, height, and path changes.'); risk = 'High'; }
+        else if (rssi < -90) { out.push('Marginal signal. Verify fade margin and antenna/feedline condition.'); risk = 'Medium'; }
+        else out.push('RSSI appears usable; continue with noise, retries, and configuration checks.');
+      }
+      if (rssi !== null && noise !== null) {
+        const margin = rssi - noise;
+        out.push('Signal-to-noise margin: ' + fmt(margin) + ' dB');
+        if (margin < 10) { out.push('Low margin. Interference/noise floor may be driving comm failures.'); risk = 'High'; }
+      }
+      if (retries !== null) out.push('Retries/timeouts observed: ' + retries + (retries > 10 ? ' — elevated; review polling interval, noise, and path.' : ''));
+      if (v !== null && v < 11) { out.push('Radio supply voltage is low for many 12/24V systems. Verify loaded power at radio terminals.'); risk = 'High'; }
+      out.push('Recommended checks: radio power under transmit, grounding, lightning arrestor, coax sweep/inspection, antenna water ingress, firmware/config match, baud/poll timing, and nearby interference.');
+      qs('radioOutput').textContent = out.join('\n');
+      state.lastOutputs.radio = qs('radioOutput').textContent;
+      setStatus('radioStatus', 'Analyzed', risk === 'High' ? 'bad' : risk === 'Medium' ? 'warn' : 'ok');
+      setDiagnostic('Telemetry / Radio', risk);
+    }
+
+    function caseData() {
+      return {
+        id: val('caseId') || 'Untitled Case',
+        site: val('siteAsset'),
+        tech: val('techName'),
+        priority: val('priority'),
+        system: val('systemType'),
+        status: val('caseStatus') || 'Open',
+        problem: val('problem'),
+        diagnostic: state.lastDiagnostic,
+        risk: state.lastRisk,
+        outputs: Object.assign({}, state.lastOutputs),
+        updated: new Date().toLocaleString()
+      };
+    }
+
+    function saveCases() { localStorage.setItem('fliqCases', JSON.stringify(state.cases)); }
+    function loadCases() { try { state.cases = JSON.parse(localStorage.getItem('fliqCases') || '[]'); } catch(e) { state.cases = []; } updateMetrics(); }
+
+    qs('saveCaseBtn').addEventListener('click', () => {
+      const c = caseData();
+      const idx = state.cases.findIndex(x => x.id === c.id);
+      if (idx >= 0) state.cases[idx] = c; else state.cases.unshift(c);
+      saveCases(); updateMetrics(); renderCases();
+      alert('Case saved locally.');
+    });
+
+    qs('newCaseBtn').addEventListener('click', () => {
+      ['caseId','siteAsset','techName','priority','systemType','problem'].forEach(id => { if(qs(id)) qs(id).value = ''; });
+      qs('caseStatus').value = 'Open';
+    });
+
+    qs('clearBtn').addEventListener('click', () => {
+      if (!confirm('Clear all locally saved Field Logic IQ cases?')) return;
+      localStorage.removeItem('fliqCases');
+      state.cases = []; updateMetrics(); renderCases();
+    });
+
+    function renderCases() {
+      const el = qs('caseLog'); if (!el) return;
+      if (!state.cases.length) { el.innerHTML = '<div class="empty">No saved cases yet.</div>'; return; }
+      let html = '<div class="table-wrap"><table><thead><tr><th>Case</th><th>Site / Asset</th><th>Priority</th><th>Status</th><th>Last Diagnostic</th><th>Updated</th></tr></thead><tbody>';
+      state.cases.forEach(c => { html += '<tr><td>' + esc(c.id) + '</td><td>' + esc(c.site || '—') + '</td><td>' + esc(c.priority || '—') + '</td><td>' + esc(c.status || '—') + '</td><td>' + esc(c.diagnostic || '—') + '</td><td>' + esc(c.updated || '—') + '</td></tr>'; });
+      html += '</tbody></table></div>';
+      el.innerHTML = html;
+    }
+
+    function esc(s) { return String(s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch])); }
+
+    function generateReport() {
+      const c = caseData();
+      const outputs = Object.values(c.outputs).filter(Boolean).map(o => '<pre style="white-space:pre-wrap;font-family:Consolas,monospace;background:#080d12;color:#e9eef2;padding:12px;border-radius:6px;border:1px solid rgba(255,75,31,.22);border-left:4px solid #ff4b1f;">' + esc(o) + '</pre>').join('') || '<p class="muted">No diagnostic output captured yet.</p>';
+      qs('reportPage').dataset.generated = 'true';
+      qs('reportPage').innerHTML = '<h2>Field Logic IQ Field Report</h2><div class="muted">Powered by FaultLine Energy · Find the Fault. Fix the System.</div><div class="line"></div><table><tbody>' +
+        '<tr><th>Case ID</th><td>' + esc(c.id) + '</td><th>Date</th><td>' + esc(new Date().toLocaleString()) + '</td></tr>' +
+        '<tr><th>Site / Asset</th><td>' + esc(c.site || '—') + '</td><th>Technician</th><td>' + esc(c.tech || '—') + '</td></tr>' +
+        '<tr><th>Priority</th><td>' + esc(c.priority || '—') + '</td><th>Status</th><td>' + esc(c.status || '—') + '</td></tr>' +
+        '<tr><th>System</th><td>' + esc(c.system || '—') + '</td><th>Risk Flag</th><td>' + esc(c.risk || '—') + '</td></tr>' +
+        '</tbody></table><div class="line"></div><h3>Problem Statement</h3><p>' + esc(c.problem || 'No problem statement entered.') + '</p><h3>Diagnostic Findings</h3>' + outputs + '<h3>Recommended Closeout</h3><p>Correct the identified deficiency, retest across the operating range, document final readings, and monitor for repeat alarms before final closure.</p>';
+      updateMetrics();
+    }
+
+    loadCases();
+  </script>
 </body>
 </html>
