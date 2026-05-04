@@ -350,6 +350,17 @@
 
     .footer-note { color: var(--dim); font-size: 12px; margin-top: 12px; line-height: 1.45; }
 
+
+    .sector-command { margin-top: 18px; border-color: rgba(255,79,31,.28); background: linear-gradient(135deg, rgba(255,79,31,.09), rgba(91,188,255,.045), rgba(255,255,255,.025)); }
+    .sector-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; }
+    .sector-chip { border:1px solid rgba(255,255,255,.11); background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); color:var(--muted); border-radius:12px; padding:13px 12px; text-align:left; font-weight:900; letter-spacing:.04em; text-transform:uppercase; font-size:11px; cursor:pointer; }
+    .sector-chip:hover, .sector-chip.active { color:#fff; border-color: rgba(255,79,31,.75); box-shadow: inset 0 0 0 1px rgba(255,79,31,.25), 0 0 22px rgba(255,79,31,.12); background: linear-gradient(135deg, rgba(255,79,31,.24), rgba(255,79,31,.07)); }
+    .sector-readout { margin-top:12px; padding:14px 16px; border:1px solid rgba(91,188,255,.22); background: rgba(5,12,18,.55); border-radius:12px; color:var(--muted); line-height:1.55; }
+    .status-pill.live .dot { background: var(--brand); box-shadow:0 0 16px rgba(255,79,31,.85); }
+    .actuator-fields { margin-top: 10px; padding: 12px; border:1px solid rgba(255,255,255,.075); border-radius: 14px; background: rgba(0,0,0,.16); }
+    .hidden { display:none !important; }
+    .main:before { content:""; position:fixed; inset:0 0 0 296px; pointer-events:none; opacity:.045; background-image: repeating-linear-gradient(115deg, transparent 0 16px, rgba(255,255,255,.5) 17px, transparent 18px), radial-gradient(circle at 70% 10%, rgba(255,79,31,.55), transparent 26%); mix-blend-mode:screen; }
+
     @media print {
       body { background: white; overflow: visible; }
       .sidebar, .topbar, .no-print { display: none !important; }
@@ -383,7 +394,7 @@
         <button class="nav-btn active" data-module="dashboard"><span class="icon">▦</span> Dashboard</button>
         <button class="nav-btn" data-module="ai"><span class="icon">AI</span> AI Assist</button>
         <button class="nav-btn" data-module="loop"><span class="icon">mA</span> 4-20mA Loop Diagnostic</button>
-        <button class="nav-btn" data-module="valve"><span class="icon">V</span> Valve Diagnostic</button>
+        <button class="nav-btn" data-module="valve"><span class="icon">VA</span> Valve / Actuator Diagnostic</button>
         <button class="nav-btn" data-module="calc"><span class="icon">ƒ</span> Calculator Suite</button>
         <button class="nav-btn" data-module="radio"><span class="icon">RF</span> Telemetry / Radio</button>
         <button class="nav-btn" data-module="case"><span class="icon">CL</span> Case Log</button>
@@ -417,12 +428,29 @@
             <div class="metric"><div class="metric-label">Report Status</div><div class="metric-value" id="metricReport">—</div><div class="metric-foot">No report generated</div></div>
             <div class="metric"><div class="metric-label">Risk Flag</div><div class="metric-value" id="metricRisk">—</div><div class="metric-foot">No active finding</div></div>
           </div>
+          <div class="card sector-command">
+            <div class="card-header"><div><div class="card-title">Industry Command Map</div><div class="card-sub">Adaptive diagnostic language for production, midstream, downstream, utilities, power, mining, and manufacturing assets</div></div><span class="status-pill live"><span class="dot"></span> Sector-ready</span></div>
+            <div class="card-body">
+              <div class="sector-grid">
+                <button class="sector-chip active" data-sector="Oil & Gas Production">Frac / Production</button>
+                <button class="sector-chip" data-sector="Midstream / Pipeline">Midstream / Pipeline</button>
+                <button class="sector-chip" data-sector="Refining / Downstream">Refining / Downstream</button>
+                <button class="sector-chip" data-sector="Power Generation">Power Generation</button>
+                <button class="sector-chip" data-sector="Water / Wastewater">Water / Wastewater</button>
+                <button class="sector-chip" data-sector="Mining / Minerals">Mining / Minerals</button>
+                <button class="sector-chip" data-sector="Chemical / Petrochemical">Chemical / Petrochemical</button>
+                <button class="sector-chip" data-sector="Renewables / Storage">Renewables / Storage</button>
+              </div>
+              <div class="sector-readout" id="sectorReadout">Select a sector to tune labels, likely failure modes, and report language.</div>
+            </div>
+          </div>
           <div class="grid two" style="margin-top:18px;">
             <div class="card">
               <div class="card-header"><div><div class="card-title">Current Case Overview</div><div class="card-sub">Case/report-ready field capture</div></div><span class="status-pill"><span class="dot"></span> Empty</span></div>
               <div class="card-body">
-                <div class="field-row three">
+                <div class="field-row four">
                   <div><label>Case ID</label><input id="caseId" placeholder="FLIQ-YYYYMMDD-001" /></div>
+                  <div><label>Industry Sector</label><select id="sectorType"><option>Oil & Gas Production</option><option>Midstream / Pipeline</option><option>Refining / Downstream</option><option>Power Generation</option><option>Water / Wastewater</option><option>Mining / Minerals</option><option>Chemical / Petrochemical</option><option>Renewables / Storage</option><option>Manufacturing / Utilities</option></select></div>
                   <div><label>Site / Asset</label><input id="siteAsset" placeholder="Station, pad, skid, RTU, valve tag" /></div>
                   <div><label>Technician</label><input id="techName" placeholder="Name or crew" /></div>
                 </div>
@@ -497,25 +525,61 @@
         <section id="valve" class="module">
           <div class="grid two">
             <div class="card">
-              <div class="card-header"><div><div class="card-title">Valve Diagnostic</div><div class="card-sub">Command, feedback, air, I/P, actuator, and mechanical checks</div></div></div>
+              <div class="card-header"><div><div class="card-title">Valve / Actuator Diagnostic</div><div class="card-sub">Pneumatic, electric MOV, electro-hydraulic, smart actuator, and mechanical valve checks</div></div><span class="status-pill live"><span class="dot"></span> Multi-sector</span></div>
               <div class="card-body">
                 <div class="field-row three">
-                  <div><label>Command %</label><input id="valveCmd" type="number" step="0.1" /></div>
-                  <div><label>Feedback %</label><input id="valveFb" type="number" step="0.1" /></div>
-                  <div><label>Supply Air PSI</label><input id="airPsi" type="number" step="0.1" /></div>
+                  <div><label>Actuator Type</label><select id="actuatorType" onchange="toggleActuatorFields()"><option value="pneumatic">Pneumatic Control Valve</option><option value="electric">Electric MOV / AOV</option><option value="hydraulic">Electro-Hydraulic</option><option value="smart">Smart Digital Actuator</option><option value="manual">Manual / Gearbox</option></select></div>
+                  <div><label>Valve Service</label><select id="valveService"><option>Control</option><option>Isolation</option><option>ESD / Shutdown</option><option>Pressure Relief / Blowdown</option><option>Choke / Severe Service</option><option>Damper / Louver</option></select></div>
+                  <div><label>Failure Action</label><select id="failAction"><option>Fail closed</option><option>Fail open</option><option>Fail last</option><option>Spring return</option><option>Double acting</option><option>Unknown</option></select></div>
                 </div>
                 <div class="field-row three">
-                  <div><label>Bench Range</label><select id="benchRange"><option>3-15 PSI</option><option>6-30 PSI</option><option>Digital positioner</option><option>Other</option></select></div>
-                  <div><label>Failure Action</label><select id="failAction"><option>Fail closed</option><option>Fail open</option><option>Fail last</option><option>Unknown</option></select></div>
-                  <div><label>Symptom</label><select id="valveSymptom"><option>Not moving</option><option>Hunting</option><option>Slow response</option><option>Position mismatch</option><option>Air leak</option><option>Stiction suspected</option></select></div>
+                  <div><label>Command %</label><input id="valveCmd" type="number" step="0.1" placeholder="Controller command" /></div>
+                  <div><label>Feedback %</label><input id="valveFb" type="number" step="0.1" placeholder="Actual position" /></div>
+                  <div><label>Symptom</label><select id="valveSymptom"><option>Position mismatch</option><option>Not moving</option><option>Hunting</option><option>Slow response</option><option>High torque / stall</option><option>Limit switch fault</option><option>Air leak</option><option>Stiction suspected</option><option>Intermittent trip</option></select></div>
                 </div>
-                <label>Observations</label><textarea id="valveNotes" placeholder="Include air leaks, positioner display, handwheel state, linkage movement, bypass/ESD state, and recent maintenance."></textarea>
-                <button class="btn primary" onclick="runValve()">Analyze Valve</button>
+
+                <div id="pneumaticFields" class="actuator-fields">
+                  <div class="field-row three">
+                    <div><label>Supply Air PSI</label><input id="airPsi" type="number" step="0.1" /></div>
+                    <div><label>I/P Output PSI</label><input id="ipPsi" type="number" step="0.1" placeholder="Optional" /></div>
+                    <div><label>Positioner / Bench</label><select id="benchRange"><option>Digital positioner</option><option>3-15 PSI</option><option>6-30 PSI</option><option>Volume booster</option><option>No positioner</option><option>Other</option></select></div>
+                  </div>
+                </div>
+
+                <div id="electricFields" class="actuator-fields hidden">
+                  <div class="field-row four">
+                    <div><label>Supply Voltage</label><input id="movVoltage" type="number" step="0.1" placeholder="120 / 240 / 480" /></div>
+                    <div><label>Motor Current A</label><input id="movCurrent" type="number" step="0.1" /></div>
+                    <div><label>Torque Status</label><select id="torqueStatus"><option>Normal</option><option>High torque / stall</option><option>No torque output</option><option>Torque switch tripped</option></select></div>
+                    <div><label>Limit Switch</label><select id="limitStatus"><option>Working</option><option>Not triggering</option><option>Stuck made</option><option>Misaligned</option></select></div>
+                  </div>
+                </div>
+
+                <div id="hydraulicFields" class="actuator-fields hidden">
+                  <div class="field-row four">
+                    <div><label>Hydraulic PSI</label><input id="hydPsi" type="number" step="1" /></div>
+                    <div><label>Accumulator PSI</label><input id="accPsi" type="number" step="1" /></div>
+                    <div><label>Solenoid State</label><select id="solenoidState"><option>Energized</option><option>De-energized</option><option>Unknown</option><option>Coil fault</option></select></div>
+                    <div><label>Return Path</label><select id="returnPath"><option>Normal</option><option>Restricted</option><option>Leaking bypass</option><option>Unknown</option></select></div>
+                  </div>
+                </div>
+
+                <div id="smartFields" class="actuator-fields hidden">
+                  <div class="field-row four">
+                    <div><label>Device Status</label><select id="smartStatus"><option>Healthy</option><option>Alarm active</option><option>Maintenance required</option><option>Communication lost</option></select></div>
+                    <div><label>Protocol</label><select id="smartProtocol"><option>HART</option><option>Modbus</option><option>Foundation Fieldbus</option><option>Profibus / Profinet</option><option>EtherNet/IP</option></select></div>
+                    <div><label>Travel Deviation %</label><input id="travelDev" type="number" step="0.1" /></div>
+                    <div><label>Signature</label><select id="signatureStatus"><option>Not checked</option><option>Normal</option><option>Friction high</option><option>Seat load abnormal</option><option>Deadband high</option></select></div>
+                  </div>
+                </div>
+
+                <label>Observations</label><textarea id="valveNotes" placeholder="Include actuator type, power/air/hydraulic source, limit/torque alarms, handwheel state, linkage/stem movement, bypass/ESD state, recent maintenance, and process conditions."></textarea>
+                <button class="btn primary" onclick="runValve()">Analyze Valve / Actuator</button>
               </div>
             </div>
             <div class="card">
-              <div class="card-header"><div><div class="card-title">Valve Findings</div><div class="card-sub">Mismatch, likely cause, and field checks</div></div><span id="valveStatus" class="status-pill"><span class="dot"></span> Not run</span></div>
-              <div class="card-body"><div class="result-box" id="valveOutput">No valve diagnostic output yet.</div></div>
+              <div class="card-header"><div><div class="card-title">Root-Cause Findings</div><div class="card-sub">Mismatch, energy source, actuator health, and field sequence</div></div><span id="valveStatus" class="status-pill"><span class="dot"></span> Not run</span></div>
+              <div class="card-body"><div class="result-box" id="valveOutput">No valve / actuator diagnostic output yet.</div></div>
             </div>
           </div>
         </section>
@@ -655,7 +719,7 @@ Recommendation: Correct identified deficiency, retest across operating range, an
     }
 
     function moduleTitle(id) {
-      const map = { dashboard:'Dashboard', ai:'AI Assist', loop:'4-20mA Loop Diagnostic', valve:'Valve Diagnostic', calc:'Calculator Suite', radio:'Telemetry / Radio', case:'Case Log', report:'Report Generator', kb:'Knowledge Base' };
+      const map = { dashboard:'Dashboard', ai:'AI Assist', loop:'4-20mA Loop Diagnostic', valve:'Valve / Actuator Diagnostic', calc:'Calculator Suite', radio:'Telemetry / Radio', case:'Case Log', report:'Report Generator', kb:'Knowledge Base' };
       return map[id] || 'Dashboard';
     }
 
@@ -759,30 +823,69 @@ Recommendation: Correct identified deficiency, retest across operating range, an
       setDiagnostic('4-20mA Loop', risk);
     }
 
+    function toggleActuatorFields() {
+      const type = val('actuatorType') || 'pneumatic';
+      ['pneumaticFields','electricFields','hydraulicFields','smartFields'].forEach(id => qs(id) && qs(id).classList.add('hidden'));
+      if (type === 'pneumatic' && qs('pneumaticFields')) qs('pneumaticFields').classList.remove('hidden');
+      if (type === 'electric' && qs('electricFields')) qs('electricFields').classList.remove('hidden');
+      if (type === 'hydraulic' && qs('hydraulicFields')) qs('hydraulicFields').classList.remove('hidden');
+      if (type === 'smart' && qs('smartFields')) qs('smartFields').classList.remove('hidden');
+    }
+
     function runValve() {
-      const cmd = num('valveCmd'), fb = num('valveFb'), air = num('airPsi');
+      const cmd = num('valveCmd'), fb = num('valveFb');
+      const type = val('actuatorType') || 'pneumatic';
       const symptom = val('valveSymptom');
-      const out = ['VALVE DIAGNOSTIC'];
+      const service = val('valveService');
+      const out = ['VALVE / ACTUATOR DIAGNOSTIC', 'Actuator type: ' + type.toUpperCase(), 'Service: ' + service];
       let risk = 'Review';
       if (cmd !== null && fb !== null) {
         const diff = Math.abs(cmd - fb);
         out.push('Command / feedback mismatch: ' + fmt(diff) + '%');
-        if (diff > 10) { out.push('Finding: significant position mismatch. Prioritize positioner, actuator air, linkage, calibration, and mechanical travel checks.'); risk = 'High'; }
-        else { out.push('Finding: command and feedback are reasonably aligned. Investigate tuning, process conditions, or intermittent behavior.'); risk = 'Low'; }
+        if (diff > 15) { out.push('Finding: severe position deviation. Treat as control authority or actuator energy failure until proven otherwise.'); risk = 'High'; }
+        else if (diff > 5) { out.push('Finding: measurable deviation. Check calibration, deadband, travel limits, and load conditions.'); risk = 'Medium'; }
+        else { out.push('Finding: command and feedback are aligned; focus on process response, tuning, intermittent trips, or mechanical symptoms.'); risk = 'Low'; }
       } else out.push('Command and feedback are needed for mismatch calculation.');
-      if (air !== null) {
-        out.push('Supply air: ' + fmt(air) + ' PSI');
-        if (air < 20) { out.push('Warning: supply air appears low for many actuators/positioners. Verify regulator, filter, leaks, and header pressure.'); risk = 'High'; }
+
+      if (type === 'pneumatic') {
+        const air = num('airPsi'), ip = num('ipPsi');
+        if (air !== null) { out.push('Supply air: ' + fmt(air) + ' PSI'); if (air < 60) { out.push('Pneumatic risk: low instrument air for many control valves. Check regulator, filter, tubing leaks, header pressure, and isolation valves.'); risk = 'High'; } }
+        if (ip !== null) out.push('I/P or positioner output: ' + fmt(ip) + ' PSI. Compare against bench range and commanded travel.');
+        out.push('Pneumatic sequence: verify air source → I/P output → positioner mode → actuator movement → linkage/stem → packing friction/stiction.');
       }
+      if (type === 'electric') {
+        const v = num('movVoltage'), a = num('movCurrent'), tq = val('torqueStatus'), lim = val('limitStatus');
+        if (v !== null) out.push('Supply voltage: ' + fmt(v) + ' VAC/VDC. Confirm under-load voltage at actuator terminals.');
+        if (a !== null) { out.push('Motor current: ' + fmt(a) + ' A.'); if (a === 0) { out.push('Electrical risk: zero current with command present suggests open control circuit, failed contactor, blown fuse, overload, interlock, or motor failure.'); risk = 'High'; } }
+        out.push('Torque status: ' + tq + '. Limit switch: ' + lim + '.');
+        if (/High|tripped/i.test(tq)) { out.push('MOV finding: high torque/stall points to mechanical binding, valve obstruction, dry gearbox, overtravel, seat load, or incorrect torque switch setting.'); risk = 'High'; }
+        if (/Not|Stuck|Misaligned/i.test(lim)) { out.push('Limit finding: limit switch fault can cause false open/closed indication or prevent travel completion. Verify cams, wiring, and DCS mapping.'); risk = risk === 'High' ? 'High' : 'Medium'; }
+        out.push('Electric sequence: verify permissives/interlocks → control voltage → contactor/VFD/overload → motor current → torque/limit switches → gearbox/stem travel.');
+      }
+      if (type === 'hydraulic') {
+        const hp = num('hydPsi'), ap = num('accPsi');
+        if (hp !== null) { out.push('Hydraulic pressure: ' + fmt(hp) + ' PSI.'); if (hp < 500) { out.push('Hydraulic risk: pressure may be insufficient depending on actuator. Check pump, leaks, isolation, relief valve, and fluid level.'); risk = 'High'; } }
+        if (ap !== null) out.push('Accumulator pressure: ' + fmt(ap) + ' PSI. Compare with required precharge/operating band.');
+        out.push('Hydraulic sequence: verify pump/accumulator → solenoid command → directional valve → cylinder leakage → return restriction → manual override.');
+      }
+      if (type === 'smart') {
+        const stat = val('smartStatus'), dev = num('travelDev'), sig = val('signatureStatus');
+        out.push('Device status: ' + stat + '. Signature: ' + sig + '.');
+        if (dev !== null) { out.push('Travel deviation: ' + fmt(dev) + '%.'); if (Math.abs(dev) > 5) { out.push('Smart actuator finding: travel deviation above tolerance. Pull diagnostics/signature and compare to baseline.'); risk = 'Medium'; } }
+        if (/Communication lost|Alarm|Maintenance/i.test(stat) || /Friction|Seat|Deadband/i.test(sig)) { out.push('Smart finding: onboard diagnostics indicate actionable device health issue. Verify protocol power, addressing, diagnostics, and valve signature.'); risk = risk === 'High' ? 'High' : 'Medium'; }
+        out.push('Smart sequence: confirm bus power/comms → device alarms → travel calibration → signature/friction/deadband → final control element mechanics.');
+      }
+      if (type === 'manual') out.push('Manual sequence: verify gearbox engagement, handwheel travel, stem movement, mechanical stops, seized packing, and process differential pressure.');
+
       out.push('Symptom: ' + symptom);
-      if (/Hunting/i.test(symptom)) out.push('Likely checks: positioner tuning, sticky packing, oversupply/undersupply air, bad feedback linkage, unstable process.');
-      if (/Slow/i.test(symptom)) out.push('Likely checks: plugged filter, restricted tubing, actuator leak, volume booster, packing friction, positioner output.');
-      if (/Not moving/i.test(symptom)) out.push('Likely checks: air isolation, solenoid/ESD state, handwheel, failed I/P, seized stem, disconnected linkage.');
-      out.push('Recommended field sequence: verify safe state, confirm command, verify air, test positioner output, inspect linkage/stem movement, stroke test when authorized.');
+      if (/Hunting/i.test(symptom)) out.push('Symptom logic: hunting often ties to tuning, deadband, sticky packing, feedback linkage, unstable process, or positioner configuration.');
+      if (/Slow/i.test(symptom)) out.push('Symptom logic: slow response suggests restricted energy source, friction, actuator leak, gearbox drag, hydraulic restriction, or conservative ramp/tuning.');
+      if (/Not moving/i.test(symptom)) out.push('Symptom logic: not moving requires energy-source verification first, then interlocks, actuator output, and mechanical travel.');
+      out.push('Report-ready closeout: document command, feedback, energy source, permissive/interlock state, actuator output, local indication, and final mechanical movement before returning to service.');
       qs('valveOutput').textContent = out.join('\n');
       state.lastOutputs.valve = qs('valveOutput').textContent;
-      setStatus('valveStatus', 'Analyzed', risk === 'High' ? 'bad' : 'ok');
-      setDiagnostic('Valve Diagnostic', risk);
+      setStatus('valveStatus', 'Analyzed', risk === 'High' ? 'bad' : risk === 'Medium' ? 'warn' : 'ok');
+      setDiagnostic('Valve / Actuator', risk);
     }
 
     function calcScale() {
@@ -852,6 +955,7 @@ Recommendation: Correct identified deficiency, retest across operating range, an
     function caseData() {
       return {
         id: val('caseId') || 'Untitled Case',
+        sector: val('sectorType'),
         site: val('siteAsset'),
         tech: val('techName'),
         priority: val('priority'),
@@ -865,6 +969,24 @@ Recommendation: Correct identified deficiency, retest across operating range, an
       };
     }
 
+
+    const sectorNotes = {
+      'Oil & Gas Production': 'Production mode: prioritize separators, LACT/skids, well pads, compressor stations, control valves, 4-20mA instrumentation, shutdown logic, and telemetry dropouts.',
+      'Midstream / Pipeline': 'Pipeline mode: prioritize block valves, MOVs, pressure/flow transmitters, leak detection inputs, RTUs, radio path, cathodic/power issues, and station permissives.',
+      'Refining / Downstream': 'Downstream mode: prioritize SIS/ESD context, severe-service valves, analyzers, DCS scaling, fired equipment permissives, and high-consequence documentation.',
+      'Power Generation': 'Power mode: prioritize feedwater/steam valves, breakers/MCCs, vibration/temperature loops, turbine auxiliaries, redundant transmitters, and trip permissives.',
+      'Water / Wastewater': 'Water mode: prioritize lift stations, pumps/VFDs, level/flow/pressure instrumentation, chlorine/chemical feed, SCADA polling, and wet-well environmental faults.',
+      'Mining / Minerals': 'Mining mode: prioritize slurry valves, conveyors, VFDs, pressure/flow/density instruments, dust/water ingress, remote radio links, and high-abrasion failure modes.',
+      'Chemical / Petrochemical': 'Chemical mode: prioritize hazardous area constraints, batch permissives, control valves, analyzers, temperature loops, SIS trips, and MOC-ready report language.',
+      'Renewables / Storage': 'Renewables mode: prioritize inverter/BESS telemetry, weather station inputs, tracker actuators, protection relays, DC/AC power quality, and network diagnostics.'
+    };
+    function setSector(sector){
+      if(qs('sectorType')) qs('sectorType').value = sector;
+      if(qs('sectorReadout')) qs('sectorReadout').textContent = sectorNotes[sector] || 'Sector profile loaded.';
+      document.querySelectorAll('.sector-chip').forEach(b => b.classList.toggle('active', b.dataset.sector === sector));
+    }
+    document.querySelectorAll('.sector-chip').forEach(b => b.addEventListener('click', () => setSector(b.dataset.sector)));
+
     function saveCases() { localStorage.setItem('fliqCases', JSON.stringify(state.cases)); }
     function loadCases() { try { state.cases = JSON.parse(localStorage.getItem('fliqCases') || '[]'); } catch(e) { state.cases = []; } updateMetrics(); }
 
@@ -877,7 +999,7 @@ Recommendation: Correct identified deficiency, retest across operating range, an
     });
 
     qs('newCaseBtn').addEventListener('click', () => {
-      ['caseId','siteAsset','techName','priority','systemType','problem','aiSymptom','aiArea','aiNotes','maMeasured','lrv','urv','processValue','supplyV','loadOhms','aiDrop','valveCmd','valveFb','airPsi','valveNotes','rssi','noise','retries','radioV','calcMa','calcLrv','calcUrv','ohmV','ohmMa','ohmR','psi','kpa','bar','freqMhz','distanceMi','txDbm'].forEach(id => { if(qs(id)) qs(id).value = ''; });
+      ['caseId','sectorType','siteAsset','techName','priority','systemType','problem','aiSymptom','aiArea','aiNotes','maMeasured','lrv','urv','processValue','supplyV','loadOhms','aiDrop','valveCmd','valveFb','airPsi','ipPsi','movVoltage','movCurrent','hydPsi','accPsi','travelDev','valveNotes','rssi','noise','retries','radioV','calcMa','calcLrv','calcUrv','ohmV','ohmMa','ohmR','psi','kpa','bar','freqMhz','distanceMi','txDbm'].forEach(id => { if(qs(id)) qs(id).value = ''; });
       if (qs('caseStatus')) qs('caseStatus').value = 'Open';
       state.lastDiagnostic = '';
       state.lastRisk = '';
@@ -938,6 +1060,8 @@ Recommendation: Correct identified deficiency, retest across operating range, an
       updateMetrics();
     }
 
+    setSector('Oil & Gas Production');
+    toggleActuatorFields();
     loadCases();
   </script>
 </body>
