@@ -296,6 +296,9 @@
       line-height: 1.4;
     }
     .check-item input { width: auto; margin-top: 2px; }
+    button.check-item { width: 100%; text-align: left; cursor: pointer; font-family: inherit; }
+    button.check-item:hover { border-color: rgba(255,90,31,.45); color: #fff; background: rgba(255,90,31,.075); }
+    .check-arrow { color: var(--brand); font-weight: 950; font-size: 16px; line-height: 1; }
 
     .table-wrap { overflow: auto; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -350,128 +353,6 @@
       .report-page { border-radius: 0; min-height: auto; }
     }
   </style>
-  <!-- FaultLine-style visual upgrade overrides: self-contained, no external assets -->
-  <style id="faultline-style-upgrade">
-    :root{
-      --bg:#05080b;--bg-2:#081018;--panel:#0e151d;--panel-2:#121b25;--panel-3:#172332;
-      --line:rgba(255,255,255,.11);--line-2:rgba(255,90,31,.35);--text:#f6f7f8;--muted:#9aa6b2;--dim:#65727d;
-      --brand:#ff4b1f;--brand-2:#ff6a28;--ok:#35d07f;--warn:#ffb020;--bad:#ff4b1f;--info:#49b8ff;
-      --shadow:0 28px 90px rgba(0,0,0,.58);--radius:10px;--radius-sm:6px;
-    }
-    body{
-      background:
-        linear-gradient(120deg, rgba(255,75,31,.08), transparent 24%),
-        radial-gradient(circle at 14% 12%, rgba(255,255,255,.08), transparent 22%),
-        radial-gradient(circle at 84% 12%, rgba(73,184,255,.07), transparent 28%),
-        linear-gradient(135deg,#030507 0%,#071017 44%,#10151b 100%);
-      overflow:hidden;
-    }
-    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.12;background-image:
-      repeating-linear-gradient(160deg, transparent 0 36px, rgba(255,255,255,.08) 37px, transparent 39px),
-      linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);background-size:100% 100%,36px 36px,36px 36px;mix-blend-mode:screen;}
-    body:after{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center, transparent 38%, rgba(0,0,0,.58) 100%);}
-    .app{grid-template-columns:310px 1fr;position:relative;z-index:1;}
-    .sidebar{background:linear-gradient(180deg,rgba(255,75,31,.12),transparent 22%),linear-gradient(180deg,#101720,#070b10);border-right:1px solid rgba(255,75,31,.22);box-shadow:inset -1px 0 0 rgba(255,255,255,.05), 18px 0 60px rgba(0,0,0,.45);}
-    .brand-block{border-radius:8px;border:1px solid rgba(255,75,31,.46);background:linear-gradient(135deg,rgba(255,75,31,.18),rgba(255,255,255,.035) 46%,rgba(255,255,255,.015));box-shadow:0 0 32px rgba(255,75,31,.10), inset 0 1px 0 rgba(255,255,255,.10);}
-    .brand-block:before{content:"⚡";position:absolute;right:14px;top:12px;color:var(--brand);font-size:42px;text-shadow:0 0 18px rgba(255,75,31,.85);}
-    .brand-block:after{background:repeating-linear-gradient(45deg,rgba(255,75,31,.20) 0 5px,transparent 5px 13px);}
-    .brand-kicker,.nav-label,.crumb,.metric-label,label{letter-spacing:.16em;text-transform:uppercase;}
-    .brand-kicker{color:#fff}.brand-name{font-size:30px;letter-spacing:.035em;text-transform:uppercase}.tagline{color:#fff;letter-spacing:.11em;text-transform:uppercase}.powered{color:#b2bac1}
-    .nav{gap:8px}.nav button{border-radius:4px;border:1px solid rgba(255,255,255,.06);background:linear-gradient(90deg,rgba(255,255,255,.035),transparent);text-transform:uppercase;font-size:12px;letter-spacing:.055em;}
-    .nav button:hover{border-color:rgba(255,75,31,.36);background:rgba(255,75,31,.08)}
-    .nav button.active{color:#fff;background:linear-gradient(90deg,rgba(255,75,31,.36),rgba(255,75,31,.09));border-color:rgba(255,75,31,.72);box-shadow:inset 3px 0 0 var(--brand),0 0 26px rgba(255,75,31,.22);}
-    .icon{border-radius:3px;color:#fff;background:#0d151d;border:1px solid rgba(255,75,31,.42);box-shadow:0 0 12px rgba(255,75,31,.12)}
-    .topbar{background:linear-gradient(90deg,rgba(8,13,18,.94),rgba(13,21,28,.82));border-bottom:1px solid rgba(255,75,31,.18);box-shadow:0 14px 46px rgba(0,0,0,.36);}
-    .page-title{font-size:32px;text-transform:uppercase;letter-spacing:.08em}.crumb{color:#ff6a28}
-    .content{background:transparent}.module{animation:moduleIn .22s ease-out;}@keyframes moduleIn{from{opacity:.45;transform:translateY(6px)}to{opacity:1;transform:none}}
-    .faultline-hero{position:relative;overflow:hidden;margin-bottom:18px;border:1px solid rgba(255,75,31,.24);border-radius:10px;background:linear-gradient(90deg,rgba(5,8,12,.82),rgba(13,20,27,.70)),radial-gradient(circle at 8% 40%,rgba(255,75,31,.34),transparent 28%);box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.08);min-height:188px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px;padding:26px;}
-    .faultline-hero:before{content:"";position:absolute;inset:0;opacity:.16;background:repeating-linear-gradient(170deg,transparent 0 22px,rgba(255,255,255,.12) 23px,transparent 25px);}
-    .hero-mark{font-size:74px;line-height:1;color:var(--brand);text-shadow:0 0 24px rgba(255,75,31,.75)}
-    .hero-title{font-size:48px;font-weight:950;line-height:.95;text-transform:uppercase;letter-spacing:.08em}.hero-title span{color:var(--brand)}
-    .hero-sub{margin-top:12px;color:#fff;letter-spacing:.22em;text-transform:uppercase;font-weight:800}.hero-mini{margin-top:16px;color:#9aa6b2;letter-spacing:.08em;text-transform:uppercase;font-size:12px}
-    .architecture{display:grid;gap:10px;align-self:center}.arch-card{display:flex;align-items:center;gap:14px;padding:14px;border-radius:7px;background:linear-gradient(135deg,rgba(18,28,38,.96),rgba(8,13,18,.8));border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
-    .arch-card b{display:block;text-transform:uppercase;letter-spacing:.08em}.arch-card small{color:var(--muted)}.arch-icon{font-size:26px;color:var(--brand)}
-    .card,.metric,.result-box,.report-page{border-radius:8px;background:linear-gradient(180deg,rgba(18,27,37,.94),rgba(9,14,20,.94));border:1px solid rgba(255,255,255,.09);box-shadow:0 16px 50px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.07)}
-    .card-header{border-bottom:1px solid rgba(255,75,31,.16);background:linear-gradient(90deg,rgba(255,75,31,.08),transparent)}
-    .card-title{letter-spacing:.1em;text-transform:uppercase}.card-sub{color:#8e9aa5}.metric{position:relative;overflow:hidden}.metric:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brand);box-shadow:0 0 18px var(--brand)}
-    .metric-value{color:#fff;text-shadow:0 0 12px rgba(255,255,255,.12)}.metric-foot{color:#7a8792}
-    input,select,textarea{border-radius:4px;background:#070c11;border:1px solid rgba(255,255,255,.12);color:#fff;box-shadow:inset 0 1px 14px rgba(0,0,0,.45)}
-    input:focus,select:focus,textarea:focus{border-color:rgba(255,75,31,.72);box-shadow:0 0 0 3px rgba(255,75,31,.12), inset 0 1px 14px rgba(0,0,0,.45)}
-    .btn{border-radius:4px;text-transform:uppercase;letter-spacing:.08em;background:#0b1118;border-color:rgba(255,255,255,.13)}.btn.primary{background:linear-gradient(135deg,#ff3e16,#ff6a28);color:#fff;box-shadow:0 0 22px rgba(255,75,31,.25)}.btn.danger{color:#fff;border-color:rgba(255,75,31,.46);background:rgba(255,75,31,.10)}
-    .status-pill{border-radius:3px;background:#080d12;border-color:rgba(255,255,255,.1);text-transform:uppercase;letter-spacing:.09em}.dot{background:var(--brand);box-shadow:0 0 10px var(--brand)}
-    .tabs button.active{background:rgba(255,75,31,.18);border-color:rgba(255,75,31,.56);color:#fff}.check-item{border-radius:5px;background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.07)}
-    .sidebar-footer{border-radius:6px;border-color:rgba(255,75,31,.18);background:rgba(255,75,31,.055)}
-  </style>
-
-  <style id="report-color-fix">
-    /* FaultLine report preview: dark, readable, print-safe */
-    #report .report-page{
-      background:
-        linear-gradient(180deg, rgba(15,24,33,.98), rgba(7,12,18,.98)) !important;
-      color:#f6f7f8 !important;
-      border:1px solid rgba(255,75,31,.24) !important;
-      box-shadow:0 18px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08) !important;
-      font-family:var(--font) !important;
-    }
-    #report .report-page h2,
-    #report .report-page h3{
-      color:#fff !important;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      margin-top:0;
-    }
-    #report .report-page h2{
-      font-size:26px;
-      padding-left:14px;
-      border-left:4px solid var(--brand);
-      text-shadow:0 0 18px rgba(255,75,31,.18);
-    }
-    #report .report-page h3{font-size:15px;margin:20px 0 8px;color:#ff6a28 !important;}
-    #report .report-page p{color:#b9c4cc !important;line-height:1.55;}
-    #report .report-page .muted{color:#91a0aa !important;}
-    #report .report-page .line{
-      height:1px !important;
-      background:linear-gradient(90deg, rgba(255,75,31,.65), rgba(255,255,255,.16), transparent) !important;
-      margin:20px 0 !important;
-    }
-    #report .report-page table{
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
-    }
-    #report .report-page table th{
-      color:#ff6a28 !important;
-      background:rgba(255,75,31,.08) !important;
-      border-color:rgba(255,255,255,.10) !important;
-      font-size:11px;
-      letter-spacing:.14em;
-    }
-    #report .report-page table td{
-      color:#e9eef2 !important;
-      background:rgba(255,255,255,.025) !important;
-      border-color:rgba(255,255,255,.10) !important;
-    }
-    #report .report-page pre{
-      background:#080d12 !important;
-      color:#e9eef2 !important;
-      border:1px solid rgba(255,75,31,.22) !important;
-      border-left:4px solid var(--brand) !important;
-      border-radius:6px !important;
-      box-shadow:inset 0 1px 14px rgba(0,0,0,.42);
-    }
-    @media print{
-      #report .report-page{background:white !important;color:#182129 !important;border:0 !important;box-shadow:none !important;}
-      #report .report-page h2,#report .report-page h3{color:#182129 !important;text-shadow:none;}
-      #report .report-page h2{border-left:4px solid #ff4b1f;}
-      #report .report-page p,#report .report-page .muted{color:#34424d !important;}
-      #report .report-page .line{background:#cbd3d8 !important;}
-      #report .report-page table{border:1px solid #d5dce1;background:white;}
-      #report .report-page table th{color:#182129 !important;background:#eef1f3 !important;border-color:#d5dce1 !important;}
-      #report .report-page table td{color:#182129 !important;background:white !important;border-color:#d5dce1 !important;}
-      #report .report-page pre{background:#f3f5f6 !important;color:#182129 !important;border:1px solid #d5dce1 !important;border-left:4px solid #ff4b1f !important;box-shadow:none;}
-    }
-  </style>
-
 </head>
 <body>
   <div class="app">
@@ -515,21 +396,6 @@
 
       <section class="content">
         <section id="dashboard" class="module active">
-          <div class="faultline-hero">
-            <div style="position:relative;z-index:1;display:flex;gap:18px;align-items:center;">
-              <div class="hero-mark">⚡</div>
-              <div>
-                <div class="hero-title">Field Logic <span>IQ</span></div>
-                <div class="hero-sub">Find the Fault. Fix the System.</div>
-                <div class="hero-mini">AI Assist → 4-20mA Loop → Valve → Calculators → Telemetry / Radio</div>
-              </div>
-            </div>
-            <div class="architecture" style="position:relative;z-index:1;">
-              <div class="arch-card"><span class="arch-icon">AI</span><div><b>Logic Assist</b><small>Field triage, probable causes, next checks</small></div></div>
-              <div class="arch-card"><span class="arch-icon">mA</span><div><b>LoopStrike</b><small>4-20mA scaling, power, and loop fault isolation</small></div></div>
-              <div class="arch-card"><span class="arch-icon">RF</span><div><b>SignalCore</b><small>Telemetry margin, antenna, and radio path diagnostics</small></div></div>
-            </div>
-          </div>
           <div class="grid four">
             <div class="metric"><div class="metric-label">Open Cases</div><div class="metric-value" id="metricOpen">—</div><div class="metric-foot">No case data loaded</div></div>
             <div class="metric"><div class="metric-label">Last Diagnostic</div><div class="metric-value" id="metricDiag">—</div><div class="metric-foot">Awaiting tool run</div></div>
@@ -556,11 +422,11 @@
             <div class="card">
               <div class="card-header"><div><div class="card-title">Priority Workflow</div><div class="card-sub">Fast path by brand priority</div></div></div>
               <div class="card-body checklist">
-                <div class="check-item"><input type="checkbox" /> <span>Start with <strong>AI Assist</strong> to structure symptoms and next measurements.</span></div>
-                <div class="check-item"><input type="checkbox" /> <span>Run <strong>4-20mA Loop Diagnostic</strong> for current-loop faults and scaling mismatches.</span></div>
-                <div class="check-item"><input type="checkbox" /> <span>Use <strong>Valve Diagnostic</strong> for positioner, actuator, air supply, and mechanical binding checks.</span></div>
-                <div class="check-item"><input type="checkbox" /> <span>Use <strong>Calculator Suite</strong> to document conversions, percent span, Ohm’s law, and pneumatic checks.</span></div>
-                <div class="check-item"><input type="checkbox" /> <span>Use <strong>Telemetry / Radio</strong> for RSSI, antenna, path, power, and polling issues.</span></div>
+                <button type="button" class="check-item workflow-link" data-module="ai"><span class="check-arrow">→</span> <span>Start with <strong>AI Assist</strong> to structure symptoms and next measurements.</span></button>
+                <button type="button" class="check-item workflow-link" data-module="loop"><span class="check-arrow">→</span> <span>Run <strong>4-20mA Loop Diagnostic</strong> for current-loop faults and scaling mismatches.</span></button>
+                <button type="button" class="check-item workflow-link" data-module="valve"><span class="check-arrow">→</span> <span>Use <strong>Valve Diagnostic</strong> for positioner, actuator, air supply, and mechanical binding checks.</span></button>
+                <button type="button" class="check-item workflow-link" data-module="calc"><span class="check-arrow">→</span> <span>Use <strong>Calculator Suite</strong> to document conversions, percent span, Ohm’s law, and pneumatic checks.</span></button>
+                <button type="button" class="check-item workflow-link" data-module="radio"><span class="check-arrow">→</span> <span>Use <strong>Telemetry / Radio</strong> for RSSI, antenna, path, power, and polling issues.</span></button>
               </div>
             </div>
           </div>
@@ -778,26 +644,35 @@ Recommendation: Correct identified deficiency, retest across operating range, an
       return map[id] || 'Dashboard';
     }
 
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.module;
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
-        btn.classList.add('active');
-        qs(id).classList.add('active');
-        qs('currentModule').textContent = moduleTitle(id);
-        qs('pageTitle').textContent = moduleTitle(id);
-        if (id === 'case') renderCases();
-        if (id === 'report') generateReport();
-      });
+    function showModule(id) {
+      if (!qs(id)) return;
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.module === id));
+      document.querySelectorAll('.module').forEach(m => m.classList.toggle('active', m.id === id));
+      qs('currentModule').textContent = moduleTitle(id);
+      qs('pageTitle').textContent = moduleTitle(id);
+      if (id === 'case') renderCases();
+      if (id === 'report') generateReport();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.addEventListener('click', evt => {
+      const nav = evt.target.closest('[data-module]');
+      if (!nav) return;
+      const id = nav.dataset.module;
+      if (qs(id)) showModule(id);
     });
 
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tabs').forEach(tabGroup => {
+      tabGroup.addEventListener('click', evt => {
+        const btn = evt.target.closest('.tab-btn');
+        if (!btn) return;
+        const target = qs(btn.dataset.tab);
+        if (!target) return;
+        const scope = tabGroup.closest('.card-body') || document;
+        tabGroup.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        scope.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
-        qs(btn.dataset.tab).classList.add('active');
+        target.classList.add('active');
       });
     });
 
@@ -988,8 +863,35 @@ Recommendation: Correct identified deficiency, retest across operating range, an
     });
 
     qs('newCaseBtn').addEventListener('click', () => {
-      ['caseId','siteAsset','techName','priority','systemType','problem'].forEach(id => { if(qs(id)) qs(id).value = ''; });
-      qs('caseStatus').value = 'Open';
+      ['caseId','siteAsset','techName','priority','systemType','problem','aiSymptom','aiArea','aiNotes','maMeasured','lrv','urv','processValue','supplyV','loadOhms','aiDrop','valveCmd','valveFb','airPsi','valveNotes','rssi','noise','retries','radioV','calcMa','calcLrv','calcUrv','ohmV','ohmMa','ohmR','psi','kpa','bar','freqMhz','distanceMi','txDbm'].forEach(id => { if(qs(id)) qs(id).value = ''; });
+      if (qs('caseStatus')) qs('caseStatus').value = 'Open';
+      state.lastDiagnostic = '';
+      state.lastRisk = '';
+      state.lastOutputs = {};
+      ['aiOutput','loopOutput','valveOutput','radioOutput','scaleOut','ohmOut','pressureOut','radioCalcOut'].forEach(id => {
+        if (qs(id)) qs(id).textContent = {
+          aiOutput: 'No AI Assist output yet.',
+          loopOutput: 'No loop diagnostic output yet.',
+          valveOutput: 'No valve diagnostic output yet.',
+          radioOutput: 'No telemetry diagnostic output yet.',
+          scaleOut: 'No calculation yet.',
+          ohmOut: 'Enter any two values.',
+          pressureOut: 'Enter one pressure value.',
+          radioCalcOut: 'No radio estimate yet.'
+        }[id];
+      });
+      setStatus('aiStatus', 'Not run', '');
+      setStatus('loopStatus', 'Not run', '');
+      setStatus('valveStatus', 'Not run', '');
+      setStatus('radioStatus', 'Not run', '');
+      if (qs('reportPage')) {
+        qs('reportPage').dataset.generated = 'false';
+        qs('reportPage').innerHTML = '<h2>Field Logic IQ Report</h2><p class="muted">Generate a report preview after entering case and diagnostic data.</p>';
+      }
+      qs('metricDiag').textContent = '—';
+      qs('metricRisk').textContent = '—';
+      updateMetrics();
+      showModule('dashboard');
     });
 
     qs('clearBtn').addEventListener('click', () => {
@@ -1011,7 +913,7 @@ Recommendation: Correct identified deficiency, retest across operating range, an
 
     function generateReport() {
       const c = caseData();
-      const outputs = Object.values(c.outputs).filter(Boolean).map(o => '<pre style="white-space:pre-wrap;font-family:Consolas,monospace;background:#080d12;color:#e9eef2;padding:12px;border-radius:6px;border:1px solid rgba(255,75,31,.22);border-left:4px solid #ff4b1f;">' + esc(o) + '</pre>').join('') || '<p class="muted">No diagnostic output captured yet.</p>';
+      const outputs = Object.values(c.outputs).filter(Boolean).map(o => '<pre style="white-space:pre-wrap;font-family:Consolas,monospace;background:#eef1f3;padding:12px;border-radius:8px;border:1px solid #d6dde2;">' + esc(o) + '</pre>').join('') || '<p class="muted">No diagnostic output captured yet.</p>';
       qs('reportPage').dataset.generated = 'true';
       qs('reportPage').innerHTML = '<h2>Field Logic IQ Field Report</h2><div class="muted">Powered by FaultLine Energy · Find the Fault. Fix the System.</div><div class="line"></div><table><tbody>' +
         '<tr><th>Case ID</th><td>' + esc(c.id) + '</td><th>Date</th><td>' + esc(new Date().toLocaleString()) + '</td></tr>' +
